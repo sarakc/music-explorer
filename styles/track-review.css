@@ -1,0 +1,281 @@
+/* Single-track tag review drawer (P3.2c).
+   Same slide-in geometry as .bte-drawer so the two read as one family; the
+   difference is the content, not the chrome. */
+
+.tr-root {
+    position: fixed;
+    inset: 0;
+    z-index: 1001;
+    pointer-events: none;
+}
+
+.tr-root.tr-open { pointer-events: auto; }
+
+.tr-backdrop {
+    position: absolute;
+    inset: 0;
+    background: var(--backdrop);
+    opacity: 0;
+    transition: opacity 200ms ease;
+    pointer-events: none;
+}
+
+.tr-root.tr-open .tr-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.tr-drawer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 480px;
+    max-width: 100vw;
+    height: 100vh;
+    background: var(--bg-raised);
+    border-left: 1px solid var(--border);
+    box-shadow: -8px 0 24px var(--overlay-soft);
+    transform: translateX(100%);
+    transition: transform 200ms ease;
+    display: flex;
+    flex-direction: column;
+    pointer-events: auto;
+}
+
+/* Closed, the drawer sits just off the right edge: its shadow would show along it. */
+.tr-root:not(.tr-open) .tr-drawer { box-shadow: none; }
+.tr-root.tr-open .tr-drawer { transform: translateX(0); }
+
+/* Header */
+.tr-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.tr-title {
+    font-weight: var(--weight-heading);
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.3;
+}
+
+.tr-path {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.68rem;
+    color: var(--text-faint);
+    word-break: break-all;
+    line-height: 1.4;
+}
+
+.tr-path--none { font-style: italic; }
+
+.tr-close {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: var(--text-faint);
+    cursor: pointer;
+    padding: 0 0.25rem;
+}
+
+.tr-close:hover { color: var(--text); }
+
+/* Field list */
+.tr-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.75rem 1.25rem 1rem;
+}
+
+.tr-field {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--hairline-soft);
+}
+
+.tr-field:last-child { border-bottom: none; }
+
+/* A staged field is the only thing on this panel that will touch the disk,
+   so it gets the accent rail and everything else stays quiet. */
+.tr-field.is-staged {
+    border-left: 2px solid var(--accent);
+    margin-left: -1.25rem;
+    padding-left: calc(1.25rem - 2px);
+}
+
+.tr-field-head {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.3rem;
+}
+
+.tr-field-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    font-weight: var(--weight-caps);
+    color: var(--text-dim);
+}
+
+.tr-badge {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.1rem 0.35rem;
+    border-radius: var(--radius-sm);
+    line-height: 1.5;
+}
+
+.tr-badge--source {
+    background: var(--accent-soft);
+    color: var(--accent-dim);
+}
+
+.tr-badge--override {
+    background: var(--accent-cool-soft);
+    color: var(--accent-cool);
+}
+
+.tr-field-discard {
+    margin-left: auto;
+    background: none;
+    border: none;
+    font-size: 0.68rem;
+    color: var(--text-faint);
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+}
+
+.tr-field-discard:hover { color: var(--accent); }
+
+.tr-field-old {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    margin-bottom: 0.25rem;
+}
+
+.tr-old { text-decoration: line-through; }
+.tr-old em { font-style: italic; text-decoration: none; }
+.tr-arrow { color: var(--accent); }
+
+.tr-field-input {
+    width: 100%;
+    padding: 0.35rem 0.5rem;
+    font: inherit;
+    font-size: 0.82rem;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+
+.tr-field-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.tr-field-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Footer */
+.tr-footer {
+    flex-shrink: 0;
+    padding: 0.85rem 1.25rem 1rem;
+    border-top: 1px solid var(--border);
+    background: var(--bg-raised);
+}
+
+.tr-status {
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: var(--text-dim);
+    margin-bottom: 0.7rem;
+}
+
+.tr-status--success { color: var(--text); }
+.tr-status--blocked { color: var(--text-dim); }
+.tr-status--error { color: var(--error); }
+
+/* A write that did not land and could not be restored is the one state the
+   user must not scroll past. */
+.tr-status--critical {
+    color: var(--on-accent);
+    background: var(--accent-dim);
+    padding: 0.5rem 0.6rem;
+    border-radius: var(--radius-sm);
+}
+
+/* Safety 7: Rekordbox running, or the check couldn't tell. */
+.tr-rekordbox {
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: var(--warn);
+    margin: -0.35rem 0 0.7rem;
+}
+
+.tr-rekordbox[hidden] { display: none; }
+
+.tr-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.tr-btn {
+    font: inherit;
+    font-size: 0.78rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.tr-btn:hover:not(:disabled) { background: var(--bg-hover); }
+
+.tr-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.tr-btn-ghost {
+    background: none;
+    border-color: transparent;
+    color: var(--text-dim);
+    margin-right: auto;
+}
+
+.tr-btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--on-accent);
+}
+
+.tr-btn-primary:hover:not(:disabled) { background: var(--accent-dim); }
+
+.tr-btn-primary kbd {
+    font: inherit;
+    font-size: 0.7rem;
+    opacity: 0.75;
+    margin-left: 0.25rem;
+}
+
+.tr-btn-undo {
+    border-color: var(--accent);
+    color: var(--accent);
+}

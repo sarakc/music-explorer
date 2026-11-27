@@ -1,0 +1,529 @@
+{
+  "corals-classic": {
+    "dark": false,
+    "bg": "#ebe1d9",
+    "bgRaised": "#f5efea",
+    "text": "#2e2322",
+    "textDim": "#675b5c",
+    "border": "#cbc1b3",
+    "accentWarm": "#d9586a",
+    "accentCool": "#3d7c8f"
+  },
+  "electric-booth": {
+    "dark": true,
+    "bg": "#0e0e10",
+    "bgRaised": "#161618",
+    "bgHover": "#1c1c1f",
+    "text": "#dedee0",
+    "textDim": "#8c8c92",
+    "textFaint": "#5a5a60",
+    "border": "#27272b",
+    "accentWarm": "#2d7dff",
+    "accentCool": "#7c9a7e",
+    "accentWarmSoft": "#15305c",
+    "accentCoolSoft": "#22302a"
+  },
+  "corals-colors": {
+    "dark": false,
+    "bg": "#e8ded5",
+    "bgRaised": "#f2ede8",
+    "text": "#254052",
+    "textDim": "#59656d",
+    "border": "#b9b8b6",
+    "accentWarm": "#ff8e70",
+    "accentCool": "#7797ae",
+    "accentText": "#915140",
+    "accentDim": "#ff977b",
+    "sorbet": "#f0c2b2",
+    "chartPalette": [
+      "#ffffff",
+      "#7797ae",
+      "#ff8e70",
+      "#9bc5c4",
+      "#eeb975",
+      "#254052"
+    ],
+    "entityColors": {
+      "artist": "#7797ae",
+      "label": "#ff8e70",
+      "tag": "#ff8e70"
+    },
+    "source": {
+      "image": "corals-colors.jpg",
+      "anchors": [
+        "#ffffff",
+        "#7797ae",
+        "#ff8e70",
+        "#9bc5c4",
+        "#eeb975",
+        "#e8ded5",
+        "#254052"
+      ],
+      "roles": {
+        "background": 5,
+        "primary": 2,
+        "secondary": 1,
+        "inkSeed": 6
+      },
+      "neutrals": "Ink adjusted for contrast; raised surface/border/selection are tints. Bright Cute uses a light cyan surface tint."
+    }
+  },
+  "blue-shine": {
+    "dark": false,
+    "bg": "#efe5fb",
+    "bgRaised": "#f6f1fd",
+    "text": "#483d9e",
+    "textDim": "#69619b",
+    "border": "#c7bde5",
+    "accentWarm": "#5044af",
+    "accentCool": "#9ecbf8",
+    "accentText": "#5044af",
+    "accentDim": "#4a3fa1",
+    "sorbet": "#b7ade0",
+    "chartPalette": [
+      "#5044af",
+      "#807eda",
+      "#a1a9f3",
+      "#9ecbf8"
+    ],
+    "entityColors": {
+      "artist": "#9ecbf8",
+      "label": "#5044af",
+      "tag": "#efe5fb"
+    },
+    "source": {
+      "image": "blue-shine.jpg",
+      "anchors": [
+        "#5044af",
+        "#807eda",
+        "#a1a9f3",
+        "#9ecbf8",
+        "#efe5fb"
+      ],
+      "roles": {
+        "background": 4,
+        "primary": 0,
+        "secondary": 3,
+        "inkSeed": 0
+      },
+      "neutrals": "Ink adjusted for contrast; raised surface/border/selection are tints. Bright Cute uses a light cyan surface tint."
+    }
+  },
+  "bright-cute": {
+    "dark": false,
+    "bg": "#e6f9f9",
+    "bgRaised": "#f1fcfc",
+    "text": "#863278",
+    "textDim": "#8b6489",
+    "border": "#cfc9da",
+    "accentWarm": "#aa3f98",
+    "accentCool": "#84c7d0",
+    "accentText": "#aa3f98",
+    "accentDim": "#9c3a8c",
+    "sorbet": "#d1b8d7",
+    "chartPalette": [
+      "#84c7d0",
+      "#9297c4",
+      "#9368b7",
+      "#aa3f98"
+    ],
+    "entityColors": {
+      "artist": "#84c7d0",
+      "label": "#aa3f98",
+      "tag": "#9297c4"
+    },
+    "source": {
+      "image": "bright-cute.jpg",
+      "anchors": [
+        "#75dddd",
+        "#84c7d0",
+        "#9297c4",
+        "#9368b7",
+        "#aa3f98"
+      ],
+      "roles": {
+        "background": 0,
+        "primary": 4,
+        "secondary": 1,
+        "inkSeed": 4
+      },
+      "neutrals": "Ink adjusted for contrast; raised surface/border/selection are tints. Bright Cute uses a light cyan surface tint."
+    }
+  },
+  "groovy-bb": {
+    "dark": false,
+    "bg": "#ffffff",
+    "bgRaised": "#ffffff",
+    "text": "#212121",
+    "textDim": "#6f6f6f",
+    "border": "#cacaca",
+    "accentWarm": "#ff5730",
+    "accentCool": "#1c99b9",
+    "accentText": "#d14727",
+    "accentDim": "#ff6441",
+    "sorbet": "#ffc4b7",
+    "chartPalette": [
+      "#ffc1c6",
+      "#ff5730",
+      "#fa6a11",
+      "#f98d35",
+      "#f2a815",
+      "#fed070"
+    ],
+    "entityColors": {
+      "artist": "#1c99b9",
+      "label": "#ff5730",
+      "tag": "#b6abe3"
+    },
+    "source": {
+      "image": "groovy-bb.jpg",
+      "anchors": [
+        "#ffc1c6",
+        "#ff5730",
+        "#fa6a11",
+        "#f98d35",
+        "#f2a815",
+        "#fed070",
+        "#aece83",
+        "#60851b",
+        "#65cbd0",
+        "#b2f0ff",
+        "#1c99b9",
+        "#b6abe3",
+        "#ffffff",
+        "#212121"
+      ],
+      "roles": {
+        "background": 12,
+        "primary": 1,
+        "secondary": 10,
+        "inkSeed": 13
+      },
+      "neutrals": "Ink adjusted for contrast; raised surface/border/selection are tints. Bright Cute uses a light cyan surface tint."
+    }
+  },
+  "lavender-lemon": {
+    "dark": false,
+    "bg": "#e8ecf8",
+    "bgRaised": "#f2f5fb",
+    "text": "#494b6d",
+    "textDim": "#67697e",
+    "border": "#c2c5d7",
+    "accentWarm": "#f28627",
+    "accentCool": "#a2a6f2",
+    "accentText": "#a0581a",
+    "accentDim": "#f39038",
+    "sorbet": "#ecc8af",
+    "chartPalette": [
+      "#a2a6f2",
+      "#b6b9f2",
+      "#f2ae2e",
+      "#f28627"
+    ],
+    "entityColors": {
+      "artist": "#a2a6f2",
+      "label": "#f28627",
+      "tag": "#b6b9f2"
+    },
+    "source": {
+      "image": "lavender-lemon.jpg",
+      "anchors": [
+        "#a2a6f2",
+        "#b6b9f2",
+        "#f2ae2e",
+        "#f28627",
+        "#e8ecf8"
+      ],
+      "roles": {
+        "background": 4,
+        "primary": 3,
+        "secondary": 0,
+        "inkSeed": 0
+      },
+      "neutrals": "Ink adjusted for contrast; raised surface/border/selection are tints. Bright Cute uses a light cyan surface tint."
+    }
+  },
+  "lemon-summer": {
+    "dark": false,
+    "bg": "#e7dfe1",
+    "bgRaised": "#f2edee",
+    "text": "#693a2f",
+    "textDim": "#795e58",
+    "border": "#c9b7b6",
+    "accentWarm": "#cd725d",
+    "accentCool": "#f5b928",
+    "accentText": "#945243",
+    "accentDim": "#d17d6a",
+    "sorbet": "#deb9b3",
+    "chartPalette": [
+      "#f5b928",
+      "#e99d75",
+      "#cd725d"
+    ],
+    "entityColors": {
+      "artist": "#f5b928",
+      "label": "#cd725d",
+      "tag": "#e99d75"
+    },
+    "source": {
+      "image": "lemon-summer.jpg",
+      "anchors": [
+        "#e7dfe1",
+        "#e0c1bb",
+        "#f5b928",
+        "#e99d75",
+        "#cd725d"
+      ],
+      "roles": {
+        "background": 0,
+        "primary": 4,
+        "secondary": 2,
+        "inkSeed": 4
+      },
+      "neutrals": "Ink adjusted for contrast; raised surface/border/selection are tints. Bright Cute uses a light cyan surface tint."
+    }
+  },
+  "nice-green": {
+    "dark": false,
+    "bg": "#dfdac2",
+    "bgRaised": "#edebdd",
+    "text": "#424530",
+    "textDim": "#60604e",
+    "border": "#b9b69f",
+    "accentWarm": "#4e5138",
+    "accentCool": "#90926f",
+    "accentText": "#4e5138",
+    "accentDim": "#484b34",
+    "sorbet": "#acaa92",
+    "chartPalette": [
+      "#90926f",
+      "#4e5138"
+    ],
+    "entityColors": {
+      "artist": "#90926f",
+      "label": "#4e5138",
+      "tag": "#4e5138"
+    },
+    "source": {
+      "image": "nice-green.jpg",
+      "anchors": [
+        "#e5dcb1",
+        "#dfdac2",
+        "#d4d3b3",
+        "#90926f",
+        "#4e5138"
+      ],
+      "roles": {
+        "background": 1,
+        "primary": 4,
+        "secondary": 3,
+        "inkSeed": 4
+      },
+      "neutrals": "Ink adjusted for contrast; raised surface/border/selection are tints. Bright Cute uses a light cyan surface tint."
+    }
+  },
+  "opal-beige": {
+    "dark": false,
+    "bg": "#e6dedd",
+    "bgRaised": "#f1edec",
+    "text": "#504343",
+    "textDim": "#6a6161",
+    "border": "#c2b9b8",
+    "accentWarm": "#b79370",
+    "accentCool": "#bcaec4",
+    "accentText": "#755e48",
+    "accentDim": "#bd9c7b",
+    "sorbet": "#d6c4b7",
+    "chartPalette": [
+      "#af9292",
+      "#bcaec4",
+      "#b79370",
+      "#c8b5a9"
+    ],
+    "entityColors": {
+      "artist": "#bcaec4",
+      "label": "#b79370",
+      "tag": "#b79370"
+    },
+    "source": {
+      "image": "opal-beige.jpg",
+      "anchors": [
+        "#af9292",
+        "#bcaec4",
+        "#b79370",
+        "#c8b5a9",
+        "#e6dedd"
+      ],
+      "roles": {
+        "background": 4,
+        "primary": 2,
+        "secondary": 1,
+        "inkSeed": 0
+      },
+      "neutrals": "Ink adjusted for contrast; raised surface/border/selection are tints. Bright Cute uses a light cyan surface tint."
+    }
+  },
+  "shapes": {
+    "dark": true,
+    "bg": "#272b2c",
+    "bgRaised": "#343839",
+    "text": "#e3f5fe",
+    "textDim": "#a1aeb4",
+    "border": "#545b5e",
+    "accentWarm": "#92ac03",
+    "accentCool": "#e1f5ff",
+    "accentText": "#92ac03",
+    "accentDim": "#9bb317",
+    "sorbet": "#4c581e",
+    "chartPalette": [
+      "#e1f5ff",
+      "#cee58e",
+      "#92ac03",
+      "#e3f5fe"
+    ],
+    "entityColors": {
+      "artist": "#e1f5ff",
+      "label": "#92ac03",
+      "tag": "#cee58e"
+    },
+    "source": {
+      "image": "shapes.jpg",
+      "anchors": [
+        "#272b2c",
+        "#e1f5ff",
+        "#cee58e",
+        "#92ac03",
+        "#e3f5fe"
+      ],
+      "roles": {
+        "background": 0,
+        "primary": 3,
+        "secondary": 1,
+        "inkSeed": 4
+      },
+      "neutrals": "Ink adjusted for contrast; raised surface/border/selection are tints. Bright Cute uses a light cyan surface tint."
+    }
+  },
+  "rose-dusk": {
+    "dark": true,
+    "bg": "#2b2529",
+    "bgRaised": "#363034",
+    "text": "#f8f2f4",
+    "textDim": "#d4c6cc",
+    "border": "#4f4449",
+    "accentWarm": "#ff7db0",
+    "accentCool": "#a8998f",
+    "accentWarmSoft": "#6e4558",
+    "accentCoolSoft": "#4a403c",
+    "legacy": true
+  },
+  "bubblegum-ink": {
+    "dark": true,
+    "bg": "#161118",
+    "bgRaised": "#221a25",
+    "text": "#f8ecf1",
+    "textDim": "#d8b8c8",
+    "border": "#46364b",
+    "accentWarm": "#ff88c8",
+    "accentCool": "#9aa39c",
+    "accentWarmSoft": "#802d5a",
+    "accentCoolSoft": "#2e3330",
+    "legacy": true
+  },
+  "bubblegum-mono": {
+    "dark": false,
+    "bg": "#f6f6f6",
+    "bgRaised": "#ffffff",
+    "text": "#171717",
+    "textDim": "#6b6b6b",
+    "border": "#dcdcdc",
+    "accentWarm": "#ff5a9a",
+    "accentCool": "#8e8e8e",
+    "legacy": true
+  },
+  "cherry-cream": {
+    "dark": false,
+    "bg": "#f6f1e4",
+    "bgRaised": "#fbf7ec",
+    "text": "#201a14",
+    "textDim": "#7a7062",
+    "border": "#e0d8c4",
+    "accentWarm": "#e84545",
+    "accentCool": "#7d827a",
+    "legacy": true
+  },
+  "corals-cousin": {
+    "dark": false,
+    "bg": "#ebe1d9",
+    "bgRaised": "#f5efea",
+    "text": "#2e2322",
+    "textDim": "#7c6f70",
+    "border": "#d3c9bd",
+    "accentWarm": "#d9586a",
+    "accentCool": "#83949c",
+    "legacy": true
+  },
+  "forest-moss": {
+    "dark": true,
+    "bg": "#262a26",
+    "bgRaised": "#30352f",
+    "text": "#f5f8f2",
+    "textDim": "#c2ccc2",
+    "border": "#444b43",
+    "accentWarm": "#8fe29e",
+    "accentCool": "#aaa79a",
+    "accentWarmSoft": "#445946",
+    "accentCoolSoft": "#3f423b",
+    "legacy": true
+  },
+  "forest-ink": {
+    "dark": true,
+    "bg": "#121c18",
+    "bgRaised": "#1b2823",
+    "text": "#eaf6ed",
+    "textDim": "#b6d2c5",
+    "border": "#2f423c",
+    "accentWarm": "#62f09a",
+    "accentCool": "#9ba59f",
+    "accentWarmSoft": "#2b613f",
+    "accentCoolSoft": "#2a3530",
+    "legacy": true
+  },
+  "lilac-dusk": {
+    "dark": true,
+    "bg": "#26262f",
+    "bgRaised": "#30303a",
+    "text": "#f2f2f9",
+    "textDim": "#cbcbdc",
+    "border": "#46475a",
+    "accentWarm": "#9aa4ff",
+    "accentCool": "#a5a5b3",
+    "accentWarmSoft": "#4a4d70",
+    "accentCoolSoft": "#3c3c48",
+    "legacy": true
+  },
+  "indigo-ink": {
+    "dark": true,
+    "bg": "#0e1026",
+    "bgRaised": "#181b36",
+    "text": "#e8ecff",
+    "textDim": "#b8c3e3",
+    "border": "#2f3560",
+    "accentWarm": "#a6b2ff",
+    "accentCool": "#8f95b4",
+    "accentWarmSoft": "#3e4890",
+    "accentCoolSoft": "#262a48",
+    "legacy": true
+  },
+  "violet-mono": {
+    "dark": false,
+    "bg": "#f6f6f6",
+    "bgRaised": "#ffffff",
+    "text": "#171717",
+    "textDim": "#6b6b6b",
+    "border": "#dcdcdc",
+    "accentWarm": "#7c3aed",
+    "accentCool": "#8e8e8e",
+    "legacy": true
+  }
+}

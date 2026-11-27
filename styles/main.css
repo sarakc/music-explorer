@@ -1,0 +1,820 @@
+:root {
+    /* The page's own size. A phone's sideways graph turns the body, so inside it the
+       viewport units measure the wrong sides (phone.js, graph.css). */
+    --view-w: 100vw;
+    --view-h: 100vh;
+    /* Greyscale + warm pop. One accent (terracotta), warm-neutral greys, no green. */
+    --bg: #f5f3ee;
+    --bg-raised: #ffffff;
+    --bg-hover: #ebe8df;
+    --text: #1a1815;
+    --text-dim: #5e5b54;
+    --text-faint: #98948a;
+    --accent: #c2562a;
+    --accent-dim: #8c3a16;
+    --accent-soft: #f6dccd;
+    --accent-warm: #c2562a; /* alias kept for components that already reference it */
+    --accent-warm-soft: #f6dccd;
+    /* Secondary: dusty slate-blue. Used for quieter UI affordances (sort arrows,
+       drop targets) so they don't compete with terracotta action accents. */
+    --accent-cool: #6b7a8a;
+    --accent-cool-soft: #dde3e9;
+    --border: #c0bcae;
+    --radius: 8px;
+    --radius-sm: 5px;
+    --success: #6b6660;
+    --error: #c2562a;
+    /* Contrast colour for text/icons placed on accent backgrounds.
+       Skins compute this per-palette from accent luminance (see skins.js);
+       this default covers the un-skinned :root case. */
+    --on-accent: #ffffff;
+    /* Chart palette slots — skins override these in skins.js. Defaults mirror
+       the historical greyscale-plus-terracotta chart-renderer palette. */
+    --chart-palette-0: #c2562a;
+    --chart-palette-1: #3a3833;
+    --chart-palette-2: #6b6660;
+    --chart-palette-3: #a09b91;
+    --chart-palette-4: #cdc8ba;
+    --chart-palette-5: #8c3a16;
+    /* Semantic "warning" (dedup RB-RB, etc.) and "highlight" (gold) tones.
+       Derived from the cool accent by default so they inherit the skin. */
+    --warn: var(--accent-cool);
+    --highlight: var(--accent-warm);
+    --overlay: rgba(0, 0, 0, 0.7);
+    --overlay-soft: rgba(0, 0, 0, 0.18);
+    --backdrop: rgba(0, 0, 0, 0.35);
+    /* Source brand tints — skinnable so palettes can mute them. */
+    --source-spotify: #1db954;
+    --source-bandcamp: #1da0c3;
+    --source-discogs: #e4a13a;
+    --source-local: #4caf50;
+    --source-rekordbox: #2196f3;
+    /* Drafted type system: lighter weights + positive tracking on caps.
+       Single dial for the "refined Mehretu" feel — precise, not chunky. */
+    --weight-display: 400;
+    --weight-heading: 500;
+    --weight-caps: 500;
+    --tracking-display: 0.04em;
+    --tracking-caps: 0.08em;
+
+    /* --- Candy palette (Discover redesign — Mehretu-ish paper+ink+candy) ---
+       Paper/ink/muted/hairline alias the skin surface tokens so every skin
+       (dark ones included) carries them; the defaults below resolve to the
+       same values these used to hard-code. */
+    --paper: var(--bg);
+    --paper-raised: var(--bg-raised);
+    --ink: var(--text);
+    --ink-soft: color-mix(in srgb, var(--text) 90%, var(--bg));
+    --muted: color-mix(in srgb, var(--text-dim) 45%, var(--text-faint));
+    --faint: var(--border);
+    --hairline: color-mix(in srgb, var(--text) 8%, transparent);
+    /* Skin-aware soft hairline for pill/chip borders. Mixes from --text so
+       it reads correctly in both light and dark skins (replaces the heavier
+       --border fallback that was leaving pills with a hard black outline). */
+    --hairline-soft: color-mix(in srgb, var(--text) 12%, transparent);
+    --sorbet: #ff8a7a;
+    /* Text on a solid sorbet band (selected row). Skins derive theirs. */
+    --on-sorbet: #1a1815;
+    --pistachio: #b9d66a;
+    --butter: #f5d66a;
+    --lilac: #c5b3e8;
+    --blueshine: #6aa9d6;
+    /* Soft washes derive from their hue so a skin that overrides --sorbet
+       (skins.js) gets matching washes for free. */
+    --sorbet-soft: color-mix(in srgb, var(--sorbet) 14%, transparent);
+    --pistachio-soft: color-mix(in srgb, var(--pistachio) 18%, transparent);
+    --lilac-soft: color-mix(in srgb, var(--lilac) 22%, transparent);
+    --blueshine-soft: color-mix(in srgb, var(--blueshine) 14%, transparent);
+
+    /* Semantic aliases — each color has ONE job. Use these in Discover code. */
+    --entity-artist: var(--butter);
+    --entity-label: var(--lilac);
+    --entity-tag: var(--pistachio);
+    --entity-credit: var(--paper);
+    --state-selected: var(--sorbet);
+    --state-selected-soft: var(--sorbet-soft);
+    --state-adjacent: var(--blueshine);
+    --state-adjacent-soft: var(--blueshine-soft);
+
+    /* Density (compact/default/roomy) — DensityManager overrides these at runtime. */
+    --density-row-padding-y: 7px;
+    --density-row-padding-x: 12px;
+    --density-table-font-size: 13px;
+    --density-header-padding-y: 7px;
+    --density-thumb-size: 28px;
+    --density-stat-card-padding: 14px 18px;
+    --density-stat-card-h3: 1.5rem;
+    --density-card-gap: 12px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    line-height: 1.5;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.app-container {
+    --sidebar-w: 216px;
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    height: 100%;
+    min-height: 0;
+    transition: grid-template-columns 0.18s ease;
+}
+/* Drawer shut: the column collapses and the table takes the width (push,
+   not overlay). The aside keeps its intrinsic width and clips, so the nav
+   slides out instead of reflowing while the column animates. */
+.app-container.sidebar-collapsed { --sidebar-w: 0px; }
+
+/* Sidebar */
+.sidebar {
+    background: var(--bg);
+    border-right: 1px solid var(--border);
+    padding: 1.1rem 0.85rem;
+    display: flex;
+    flex-direction: column;
+    width: 216px;
+    overflow: hidden;
+    min-width: 0;
+}
+.app-container.sidebar-collapsed .sidebar {
+    border-right-color: transparent;
+    visibility: hidden;
+    transition: visibility 0s 0.18s, border-color 0.18s;
+}
+
+/* The web viewer has no sidebar: its empty aside keeps the first column at zero width. */
+@supports (height: 100dvh) { :root { --view-h: 100dvh; } }
+
+/* A phone held upright on a graph route (phone.js): the body draws on its side, as wide as the
+   screen is tall, so the phone is turned to read it. Its left edge is the phone's top (notch),
+   its right edge the phone's bottom (home bar). */
+html.is-sideways { --view-w: 100dvh; --view-h: 100vw; }
+html.is-sideways body {
+    position: fixed; top: 0; left: 100vw; width: 100dvh; height: 100vw;
+    transform-origin: top left; transform: rotate(90deg);
+    padding: 0 env(safe-area-inset-bottom) 0 env(safe-area-inset-top);
+}
+
+[data-viewer] .app-container { --sidebar-w: 0px; }
+[data-viewer] .app-container .sidebar { visibility: hidden; border-right-color: transparent; padding: 0; }
+.viewer-source { margin: 2px 0 0; font-size: 12px; color: var(--text-faint); }
+/* The viewer's header is one row: the title, the source line beside it, ← → on the right. */
+[data-viewer] .main-header { padding-top: 0.8rem; padding-bottom: 0.8rem; }
+[data-viewer] .top-bar { margin-bottom: 0; }
+[data-viewer] .main-header:has(#sectionTabs:not([hidden])) .top-bar { margin-bottom: 0.6rem; }
+[data-viewer] .top-bar > div:first-child { display: flex; align-items: baseline; gap: 14px; min-width: 0; }
+[data-viewer] .view-subtitle:empty { display: none; }
+[data-viewer] .viewer-source { margin: 0; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.viewer-source a { color: inherit; text-decoration: underline; text-decoration-color: var(--hairline-soft); text-underline-offset: 2px; }
+.viewer-source a:hover { color: var(--text); }
+
+/* Visitor maps: the header's entry (before ← →), the file chip on a visitor's map, and the sheet. */
+.visitor-entry {
+    margin-left: auto; flex: none; display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px;
+    font: inherit; font-size: 12px; color: var(--text); background: var(--bg-raised);
+    border: 1px solid var(--hairline-soft); border-radius: 999px; cursor: pointer; transition: border-color 150ms;
+}
+.visitor-entry:hover, .visitor-entry:focus-visible { border-color: var(--text-dim); }
+/* ← → keep their own auto margin otherwise; beside the entry they sit next to it. */
+#visitorEntry + .top-bar-controls { margin-left: 0; }
+.visitor-entry-ico { color: var(--accent); font-size: 13px; line-height: 1; }
+.visitor-chip {
+    margin-left: auto; flex: none; display: inline-flex; align-items: center; gap: 4px; max-width: 280px; padding: 3px 4px 3px 12px;
+    font-size: 12px; color: var(--text); background: var(--bg-raised); border: 1px solid var(--hairline-soft); border-radius: 999px;
+}
+.visitor-chip-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.visitor-chip-x {
+    flex: none; width: 20px; height: 20px; display: grid; place-items: center; padding: 0; border: 0; border-radius: 50%;
+    font-size: 10px; color: var(--text-faint); background: none; cursor: pointer; transition: color 150ms;
+}
+.visitor-chip-x:hover, .visitor-chip-x:focus-visible { color: var(--text); }
+.visitor-sheet-host { position: fixed; top: 64px; right: 16px; z-index: 120; width: min(360px, calc(100vw - 32px)); }
+.visitor-sheet {
+    display: flex; flex-direction: column; gap: 8px; padding: 14px 16px 16px; background: var(--bg-raised); color: var(--text);
+    border: 1px solid var(--hairline-soft); border-radius: 12px; box-shadow: 0 12px 32px var(--overlay-soft);
+}
+.visitor-sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+.visitor-sheet-title { font-size: 15px; font-weight: var(--weight-heading); }
+.visitor-sheet-x, .visitor-sheet-cancel { font: inherit; background: none; border: 0; cursor: pointer; color: var(--text-dim); transition: color 150ms; }
+.visitor-sheet-x { width: 24px; height: 24px; padding: 0; font-size: 12px; }
+.visitor-sheet-cancel { padding: 2px 10px; font-size: 12px; border: 1px solid var(--hairline-soft); border-radius: 999px; }
+.visitor-sheet-x:hover, .visitor-sheet-cancel:hover, .visitor-sheet-x:focus-visible, .visitor-sheet-cancel:focus-visible { color: var(--text); }
+.visitor-sheet [hidden] { display: none !important; }
+.visitor-drop {
+    display: grid; place-items: center; min-height: 76px; padding: 12px; font-size: 13px; color: var(--text-dim); text-align: center;
+    border: 1px dashed var(--border); border-radius: 10px; cursor: pointer; transition: border-color 150ms, color 150ms;
+}
+.visitor-drop:hover, .visitor-drop:focus-within { border-color: var(--text-dim); color: var(--text); }
+.visitor-progress { display: flex; flex-direction: column; justify-content: center; gap: 8px; min-height: 76px; }
+.visitor-progress-line { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 10px; font-size: 13px; }
+.visitor-size { color: var(--text-dim); font-variant-numeric: tabular-nums; }
+.visitor-bar { height: 2px; background: var(--hairline-soft); border-radius: 1px; overflow: hidden; }
+.visitor-bar > span { display: block; height: 100%; width: 0; background: var(--accent); transition: width 200ms ease-out; }
+.visitor-error { font-size: 13px; color: var(--text); }
+.visitor-error-detail { font-size: 12px; color: var(--text-faint); overflow-wrap: anywhere; }
+.visitor-formats, .visitor-privacy { font-size: 12px; color: var(--text-dim); }
+.visitor-privacy a { color: inherit; text-decoration: underline; text-decoration-color: var(--hairline-soft); text-underline-offset: 2px; }
+.visitor-privacy a:hover { color: var(--text); }
+
+.sidebar-header {
+    font-size: 24px;
+    font-weight: var(--weight-display);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--text);
+    margin-bottom: 1.4rem;
+    padding: 0.25rem 0.4rem 0;
+}
+
+/* Sidebar nav — one flat list, one weight. Every entry is a section;
+   sub-navigation lives in the main header's .section-tabs strip. */
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 10px 8px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--text-dim);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    text-decoration: none;
+    transition: color 0.15s, background 0.15s;
+}
+.nav-item .nav-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav-item[hidden] { display: none; }
+
+.nav-item:hover { color: var(--text); background: var(--bg-hover); }
+.nav-item.active { color: var(--text); background: var(--bg-raised); }
+
+/* Settings sits at the bottom, under a hairline. */
+.nav-item.nav-item-last {
+    margin-top: auto;
+    border-top: 1px solid var(--hairline-soft);
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+
+.nav-count {
+    flex: 0 0 auto;
+    display: inline-block;
+    padding: 0 7px;
+    min-width: 18px;
+    text-align: center;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--text) 6%, transparent);
+    color: var(--text-dim);
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 16px;
+    font-variant-numeric: tabular-nums;
+}
+.nav-item.active .nav-count { background: var(--bg-hover); color: var(--text); }
+.nav-count[hidden] { display: none; }
+
+/* Section tabs — the one sub-navigation pattern. Sits under the title in
+   the main header; hidden when a section has a single view. */
+.section-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    margin: -0.25rem 0 0.75rem;
+    border-bottom: 1px solid var(--hairline-soft);
+}
+.section-tabs[hidden] { display: none; }
+.section-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px 8px;
+    margin-bottom: -1px;
+    border-bottom: 2px solid transparent;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.12s, border-color 0.12s;
+}
+.section-tab:hover { color: var(--text); }
+.section-tab.is-active { color: var(--text); border-bottom-color: var(--accent); }
+.section-tab-count {
+    padding: 0 6px;
+    min-width: 16px;
+    text-align: center;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--text) 6%, transparent);
+    color: var(--text-dim);
+    font-size: 0.68rem;
+    line-height: 15px;
+    font-variant-numeric: tabular-nums;
+}
+.section-tab-count[hidden] { display: none; }
+.section-tab.is-active .section-tab-count { background: var(--accent-soft); color: var(--accent-text, var(--accent-dim)); }
+
+/* A header view's controls at the right end of the tabs row: ☆, Filter, ⋯. */
+.tab-controls { margin-left: auto; display: flex; gap: 4px; align-items: center; padding-bottom: 4px; }
+.tab-controls .ctl { border: 0; background: none; color: var(--text-dim); font: inherit; font-size: 0.85rem; font-weight: 600; padding: 4px 8px; border-radius: var(--radius-sm); display: inline-flex; gap: 5px; align-items: center; cursor: pointer; }
+.tab-controls .ctl:hover { color: var(--text); background: var(--bg-hover); }
+.tab-controls .ctl[aria-pressed="true"], .tab-controls .ctl.is-fav-on { color: var(--accent-dim); }
+.tab-controls .ctl.on { color: var(--accent-dim); background: var(--accent-soft); }
+.tab-controls .ctl .n { font-size: 0.7rem; background: var(--bg); border-radius: 999px; padding: 0 6px; }
+/* A view's own menus in the row (Favorites: Sort, Group). */
+.tab-controls select.ctl { max-width: 12rem; }
+.view-switch { display: inline-flex; border: 1px solid var(--hairline-soft); border-radius: 999px; overflow: hidden; margin-right: 6px; background: var(--bg-raised); }
+.view-switch button { border: 0; background: none; color: var(--text-faint); padding: 3px 9px; display: inline-grid; place-items: center; cursor: pointer; }
+.view-switch button:hover { color: var(--text); }
+.view-switch button.is-active { color: var(--text); background: var(--bg-hover); }
+/* Playlists and Charts have no graph: the switch keeps its place and shows the mode, inert. */
+.view-switch.is-dimmed { opacity: 0.45; }
+.view-switch.is-dimmed button { cursor: default; }
+.view-switch.is-dimmed button:hover { color: var(--text-faint); }
+.view-switch.is-dimmed button.is-active:hover { color: var(--text); }
+
+/* Main content — flex column with header outside the scroll region.
+   Header is structurally pinned (not position: sticky) so content can never
+   leak above it during scroll. */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0; /* let the grid cell honor 1fr — without this, wide tables/filter rows blow the column past viewport */
+    overflow: hidden;
+}
+
+.main-header {
+    background: var(--bg-raised);
+    border-bottom: 1px solid var(--hairline-soft);
+    flex: 0 0 auto;
+    padding: 1.1rem 1.75rem 0.9rem;
+}
+
+.main-scroll {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    --main-scroll-pad-top: 1.5rem;
+    padding: var(--main-scroll-pad-top) 1.75rem 1.75rem;
+    min-width: 0;
+}
+
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    gap: 1.25rem;
+    flex-shrink: 0;
+}
+
+.view-title { font-size: 1.4rem; font-weight: var(--weight-heading); letter-spacing: -0.005em; line-height: 1.15; }
+.view-subtitle { font-size: 0.82rem; color: var(--text-dim); margin-top: 2px; }
+
+/* Global heading scale. Individual surfaces can override; these defaults give
+   every surface a consistent baseline rhythm. Section labels (small-caps) are
+   handled by the per-surface .sect-label / .lp-section-title patterns. */
+h1 { font-size: 1.6rem; font-weight: var(--weight-heading); letter-spacing: -0.01em; line-height: 1.15; }
+h2 { font-size: 1.2rem; font-weight: var(--weight-heading); letter-spacing: -0.005em; line-height: 1.2; }
+h3 { font-size: 0.95rem; font-weight: var(--weight-heading); line-height: 1.25; }
+
+.search-container {
+    position: relative;
+    flex: 1 1 auto;
+    max-width: 480px;
+    min-width: 240px;
+}
+
+.search-container::before {
+    content: "";
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    transform: translateY(-50%);
+    background: var(--text-faint);
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><path d='M20 20l-3.5-3.5'/></svg>") center / contain no-repeat;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><path d='M20 20l-3.5-3.5'/></svg>") center / contain no-repeat;
+    pointer-events: none;
+    transition: background 0.15s;
+}
+
+.search-container:focus-within::before { background: var(--accent); }
+
+.search-input {
+    width: 100%;
+    height: 38px;
+    padding: 0 14px 0 38px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text);
+    font-size: 0.9rem;
+    transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.search-input::placeholder { color: var(--text-faint); }
+
+.search-input:hover { border-color: var(--text-faint); }
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+/* Filters */
+
+.filter-select {
+    height: 32px;
+    padding: 0 28px 0 12px;
+    background-color: var(--bg);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235e5b54' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: border-color 0.15s, background-color 0.15s;
+}
+
+.filter-select:hover { border-color: var(--text-faint); background-color: var(--bg-hover); }
+.filter-select:focus { outline: none; border-color: var(--accent); }
+/* Already-applied values stay listed (the select toggles them off) but read
+   as "in use". Option styling is honored by Chrome/Firefox; the ✓ prefix in
+   the label covers browsers that paint the native popup. */
+.filter-select option.is-active { color: var(--accent-text, var(--accent)); font-weight: 600; }
+
+.filter-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 26px;
+    padding: 0 10px 0 12px;
+    background: var(--accent-warm-soft);
+    border: 1px solid transparent;
+    color: var(--accent-text, var(--accent-dim));
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.filter-pill:hover { background: var(--bg-hover); color: var(--accent-text, var(--accent)); border-color: color-mix(in srgb, var(--accent) 55%, var(--border)); }
+
+.pill-swatch { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; vertical-align: 0; }
+
+.filter-bpm {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    color: var(--text);
+}
+.filter-bpm-spark { fill: var(--accent-dim); opacity: 0.7; }
+
+/* Filter band: opens under the tabs from Filter, pushes the table down,
+   closes on Esc. Rows: Saved chips, the filter controls, the foot. */
+.filter-band { margin-top: 2px; padding: 10px 0 2px; border-top: 1px solid var(--hairline-soft); display: grid; grid-template-columns: auto 1fr; gap: 8px 10px; align-items: center; }
+.band-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--text-faint); }
+.filter-band .row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.filter-band .filter-select, .filter-band .filter-bpm { height: 28px; font-size: 0.82rem; }
+.filter-band :is(label, span).filter-select { display: inline-flex; align-items: center; gap: 6px; padding: 0 10px; background-image: none; cursor: default; }
+.filter-band input[type="number"], .filter-band input[type="date"] { padding: 2px 6px; border: 1px solid var(--border); border-radius: 4px; background: transparent; color: var(--text); font-size: 0.82rem; }
+.filter-band input[type="number"] { width: 56px; }
+.filter-select.set, .filter-bpm.set { border-color: var(--accent); color: var(--text); }
+.band-foot { grid-column: 1 / -1; display: flex; gap: 14px; font-size: 0.78rem; color: var(--text-dim); align-items: center; }
+.band-foot button { border: 0; background: none; padding: 2px 6px; color: var(--text-dim); font-weight: 600; border-radius: var(--radius-sm); cursor: pointer; }
+.band-foot button:hover { color: var(--text); }
+.band-foot button[aria-pressed="true"] { color: var(--accent-dim); background: var(--accent-soft); }
+.band-foot [data-edit-rules] { margin-left: auto; }
+.chip-s { display: inline-flex; align-items: center; height: 26px; padding: 0 10px; border: 1px solid var(--hairline-soft); border-radius: 999px; background: var(--bg); font-size: 0.78rem; font-weight: 600; color: var(--text-dim); cursor: pointer; }
+.chip-s:hover { color: var(--text); }
+.chip-s.on { background: var(--accent-soft); color: var(--accent-dim); border-color: transparent; }
+
+/* Filter line: while a filter is active, the saved filter's name, one pill
+   per condition, then Clear. Absent with no filter. */
+.filter-line { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
+.filter-line .saved { font-size: 0.8rem; font-weight: 600; color: var(--text); margin-right: 4px; }
+.filter-line .clear { margin-left: auto; border: 0; background: none; padding: 2px 4px; font-size: 0.78rem; color: var(--text-dim); cursor: pointer; }
+.filter-line .clear:hover { color: var(--text); }
+.filter-pill b { font-weight: 500; opacity: 0.75; margin-right: 2px; }
+.filter-pill .x { opacity: 0.7; }
+.filter-pill:hover .x { opacity: 1; }
+.filter-band-host:not([hidden]) + .filter-line-host .filter-line { margin-top: 10px; }
+
+/* Facet picker (facet-picker.js): a button in the band, a popover on the body. */
+.facet-btn { padding: 0 12px; background-image: none; display: inline-flex; align-items: center; gap: 4px; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.facet-btn b { font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+.facet-pop {
+    position: fixed; z-index: 60; width: 260px; max-height: min(380px, 70vh); display: flex; flex-direction: column;
+    background: var(--bg-raised); border: 1px solid var(--hairline-soft); border-radius: var(--radius);
+    box-shadow: 0 12px 32px var(--overlay-soft); font-size: 0.82rem;
+}
+.facet-q { margin: 8px; padding: 5px 8px; border: 1px solid var(--hairline-soft); border-radius: var(--radius-sm); background: var(--bg); color: var(--text); font: inherit; }
+.facet-q:focus { outline: none; border-color: var(--text-faint); }
+.facet-body { display: flex; flex-direction: column; min-height: 0; }
+.facet-list { overflow-y: auto; padding: 0 4px 6px; min-height: 0; }
+.facet-row { display: flex; align-items: center; gap: 8px; padding: 4px 6px; border-radius: var(--radius-sm); cursor: pointer; color: var(--text); }
+.facet-row:hover, .facet-row:focus-visible { background: var(--bg-hover); outline: none; }
+.facet-box { flex: none; width: 12px; height: 12px; border: 1px solid var(--text-faint); border-radius: 3px; }
+.facet-row[aria-selected="true"] .facet-box { background: var(--accent); border-color: var(--accent); box-shadow: inset 0 0 0 2px var(--bg-raised); }
+.facet-row .pill-swatch { margin-right: 0; flex: none; }
+.facet-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.facet-n { color: var(--text-faint); font-variant-numeric: tabular-nums; font-size: 0.76rem; }
+.facet-only { display: none; border: 0; background: none; padding: 0 2px; font: inherit; font-size: 0.76rem; color: var(--text-dim); cursor: pointer; }
+.facet-only:hover { color: var(--text); text-decoration: underline; }
+.facet-row:hover .facet-only, .facet-row:focus-visible .facet-only { display: inline; }
+.facet-row:hover .facet-n, .facet-row:focus-visible .facet-n { display: none; }
+.facet-empty, .facet-more { margin: 4px 10px 8px; color: var(--text-faint); font-size: 0.78rem; }
+.facet-foot { border-top: 1px solid var(--hairline-soft); padding: 4px 8px; display: flex; justify-content: flex-end; }
+.facet-foot button { border: 0; background: none; padding: 2px 4px; font: inherit; font-size: 0.78rem; color: var(--text-dim); cursor: pointer; }
+.facet-foot button:hover { color: var(--text); }
+.facet-preset { width: 100%; border: 0; background: none; font: inherit; text-align: left; }
+.facet-preset[aria-pressed="true"] { color: var(--accent-dim); font-weight: 600; }
+.facet-dates { display: flex; flex-direction: column; gap: 6px; padding: 6px 10px 10px; border-top: 1px solid var(--hairline-soft); color: var(--text-dim); font-size: 0.78rem; }
+.facet-dates label { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.facet-dates input { padding: 2px 6px; border: 1px solid var(--border); border-radius: 4px; background: transparent; color: var(--text); font: inherit; }
+.filter-year { gap: 4px; color: var(--text-dim); }
+.filter-year input[type="number"] { width: 58px; }
+.band-more { border: 0; background: none; padding: 0 6px; height: 28px; font-size: 0.8rem; font-weight: 600; color: var(--text-dim); cursor: pointer; }
+.band-more:hover { color: var(--text); }
+.band-count { color: var(--text-dim); font-variant-numeric: tabular-nums; }
+/* The viewer's band over the map, under its Filter chip (floating-band.js). */
+.filter-band-host.is-floating {
+    position: fixed; left: var(--band-x, 8px); top: var(--band-y, 56px); z-index: 50; width: min(860px, calc(100vw - 16px));
+    padding: 2px 14px 8px; background: var(--bg-raised); border: 1px solid var(--hairline-soft); border-radius: var(--radius);
+    box-shadow: 0 12px 32px var(--overlay-soft);
+}
+.filter-band-host.is-floating .filter-band { border-top: 0; }
+:where(html.is-phone) .facet-row { min-height: 44px; }
+:where(html.is-phone) .facet-only { display: inline; }
+
+/* Links — global text-link system.
+   Default: text-color body link with an accent-color underline that fades
+   in on hover. Accent is reserved as a signal (.link-accent), not the
+   default — keeps dense table rows from shouting. Excluded: anchors that
+   opt out via `text-decoration: none` (e.g. .nav-item, .link-chip). */
+a {
+    color: inherit;
+    text-decoration-line: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: text-decoration-color 0.15s, color 0.15s;
+}
+a:hover {
+    color: var(--accent-text, var(--accent));
+    text-decoration-color: var(--accent);
+}
+
+/* Accent-colored variant: use when a link IS the focal action of its
+   context (CTA, callout, single-link cards). */
+.link-accent {
+    color: var(--accent-text, var(--accent));
+}
+.link-accent:hover {
+    color: var(--accent-text, var(--accent-dim));
+    text-decoration-color: var(--accent-dim);
+}
+
+/* Quieter variant: dimmed-text default, accent on hover. For tertiary
+   inline references in dense layouts. */
+.link-quiet {
+    color: var(--text-dim);
+}
+.link-quiet:hover {
+    color: var(--accent-text, var(--accent));
+}
+
+/* Candy chip — for action affordances (dig from this, explore label,
+   open in source, etc.). Pill shape, accent-soft fill, no underline.
+   Pair with `.chip-cool` for secondary cool-accent variant. */
+.link-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 11px;
+    background: var(--accent-soft);
+    color: var(--accent-text, var(--accent-dim));
+    /* The user-agent button border is the source of the "harsh outline" the user
+       was seeing on .link-chip pills (the chip never set its own border, so
+       the default `1px outset buttonborder` leaked through). Reset it here
+       so chip-style buttons read as soft pills. */
+    border: 0;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1.35;
+    text-decoration: none;
+    white-space: nowrap;
+    /* Strip the browser default focus ring; we re-add a softer, accent-tinted
+       version below for keyboard users. */
+    outline: none;
+    transition: background 0.15s, color 0.15s, transform 0.12s, box-shadow 0.15s;
+}
+.link-chip:hover {
+    background: var(--bg-hover);
+    color: var(--accent-text, var(--accent));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+/* Soft, accent-tinted focus ring — visible for keyboard navigation but a
+   far cry from the harsh native outline. Falls back to a translucent --accent
+   if --hairline-soft isn't defined. */
+.link-chip:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    outline-offset: 2px;
+}
+.link-chip.chip-cool {
+    background: var(--accent-cool-soft);
+    color: var(--accent-cool);
+}
+.link-chip.chip-cool:hover {
+    background: var(--bg-hover);
+    color: var(--accent-cool);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-cool) 55%, transparent);
+}
+.link-chip.chip-cool:focus-visible {
+    outline-color: color-mix(in srgb, var(--accent-cool) 45%, transparent);
+}
+.link-chip.chip-sm {
+    padding: 2px 8px;
+    font-size: 0.72rem;
+    gap: 4px;
+}
+
+/* Buttons */
+.btn {
+    padding: 8px 16px;
+    background: var(--accent);
+    border: 1.5px solid var(--accent);
+    border-radius: var(--radius-sm);
+    color: var(--on-accent);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.btn:hover { background: var(--accent-dim); border-color: var(--accent-dim); }
+
+.btn-secondary {
+    background: var(--bg-raised);
+    border: 1.5px solid var(--border);
+    color: var(--text);
+}
+.btn-secondary:hover { background: var(--bg-hover); border-color: var(--text-dim); }
+
+.btn-sm { padding: 6px 12px; font-size: 0.82rem; }
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--overlay);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active { display: flex; }
+
+.modal-content {
+    background: var(--bg-raised);
+    border: 1px solid var(--hairline, var(--border));
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 18px 48px -18px color-mix(in srgb, var(--text) 40%, transparent),
+                0 2px 6px color-mix(in srgb, var(--text) 8%, transparent);
+}
+
+/* Label enrichment pill */
+.le-pill {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.25rem 0.6rem;
+    background: var(--bg-hover); border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 0.82rem;
+}
+.le-pill-label { font-weight: 600; }
+.le-pill-count { font-variant-numeric: tabular-nums; color: var(--accent-text, var(--accent)); }
+
+/* Notification */
+.notification {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    padding: 10px 16px;
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    z-index: 1001;
+    animation: notif-in 0.2s ease;
+}
+
+.notification.success { border-left-color: var(--success); }
+.notification.error { border-left-color: var(--error); }
+
+@keyframes notif-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+
+/* Empty state — quiet paper-raised card so it reads as a deliberate pause
+   rather than a rendering gap. */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1.25rem;
+    color: var(--text-dim);
+    background: var(--bg-raised);
+    border: 1px solid var(--hairline, var(--border));
+    border-radius: var(--radius);
+}
+.empty-state h3 {
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+    font-weight: var(--weight-heading);
+    letter-spacing: -0.005em;
+}
+.empty-state p { margin-bottom: 1rem; font-size: 0.85rem; }
+.empty-state p:last-child { margin-bottom: 0; }
+
+/* Loading */
+.loading {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-dim);
+    font-size: 0.85rem;
+    letter-spacing: 0.01em;
+}
+
+/* Utilities */
+.muted { color: var(--text-dim); font-size: 0.8rem; }
+code { background: var(--bg-hover); padding: 2px 5px; border-radius: 3px; font-size: 0.8rem; }
+
+/* Narrow screens: the phone layout (phone.css, html.is-phone) as the page loads. A desktop window
+   narrowed later keeps the desktop layout and its sidebar. */
+
+/* Desktop-only line for Tools and Settings' import cards (desktop-only.js): phones and other
+   narrow or touch-only screens see it; desktops never do. */
+.desktop-only-notice { display: none; }
+@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+    .desktop-only-notice:not([hidden]) {
+        display: block;
+        margin: 4px 0 8px;
+        color: var(--text-dim);
+        font-size: 0.85rem;
+    }
+}
+
+html.collection-standby .app-container {
+    display: none;
+}
+
+.collection-standby-card {
+    margin: min(18vh, 9rem) auto 0;
+    padding: 1.5rem;
+    max-width: 28rem;
+}
+
+.collection-standby-card p {
+    margin: 0.75rem 0 1rem;
+}

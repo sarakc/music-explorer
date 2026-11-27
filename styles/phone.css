@@ -1,0 +1,202 @@
+/* The phone layout's frame (docs/specs/2026-11-21-phone-layout-design.md, part 2): the tab bar
+   and More, the header upright, the player above the tab bar (one shared row in landscape) and
+   the queue full height. Every rule hangs off html.is-phone (PHONE_QUERY as the page loads); html.is-landscape (a turned phone,
+   or one drawn sideways) and html.can-back come from phone.js. The graph's phone rules are at
+   the end of graph.css. */
+
+.tab-bar-host { display: none; }
+
+/* No sidebar on a phone, however wide it is turned: the tab bar is the navigation. */
+:where(html.is-phone) body .app-container, :where(html.is-phone) body .app-container.has-slot-strip, :where(html.is-phone) body .app-container.sidebar-collapsed { grid-template-columns: minmax(0, 1fr); }
+:where(html.is-phone) .app-container > .sidebar { display: none; }
+
+/* ── Tab bar: the body's third row, under the app and the player ── */
+:where(html.is-phone) .tab-bar-host {
+    display: block; position: relative; z-index: 96; grid-row: 3;
+    background: var(--bg-raised); border-top: 1px solid var(--hairline-soft);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+:where(html.is-phone) .tab-bar { display: flex; }
+:where(html.is-phone) .tab-bar-item {
+    flex: 1 1 0; min-height: 50px; display: grid; place-items: center; padding: 0 6px;
+    border: 0; background: none; font: inherit; font-size: 13px; font-weight: 500;
+    color: var(--text-dim); text-decoration: none; cursor: pointer;
+}
+:where(html.is-phone) .tab-bar-item.is-active { color: var(--text); box-shadow: inset 0 2px 0 var(--accent); }
+:where(html.is-phone) .tab-bar-item:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+:where(html.is-phone) .more-sheet {
+    position: absolute; right: 8px; bottom: calc(100% + 6px); min-width: 200px; z-index: 1;
+    display: flex; flex-direction: column; padding: 6px;
+    background: var(--bg-raised); border: 1px solid var(--hairline-soft); border-radius: 14px;
+    box-shadow: 0 12px 30px var(--overlay-soft);
+}
+:where(html.is-phone) .more-sheet[hidden] { display: none; }
+:where(html.is-phone) .more-sheet-item {
+    min-height: 48px; display: flex; align-items: center; padding: 0 14px; border-radius: 10px;
+    border: 0; background: none; font: inherit; font-size: 15px; color: var(--text); text-align: left; text-decoration: none; cursor: pointer;
+}
+:where(html.is-phone) .more-sheet-item:active, :where(html.is-phone) .more-sheet-item:focus-visible { background: var(--bg-hover); outline: none; }
+
+/* What sits along the bottom, so Info's pill and sheet clear it (graph.css). */
+:where(html.is-phone) body:has(> .tab-bar-host) { --dock-h: calc(51px + env(safe-area-inset-bottom)); }
+:where(html.is-phone) body:has(> .tab-bar-host):has(> .local-player-host:not([hidden])) { --dock-h: calc(108px + env(safe-area-inset-bottom)); }
+
+/* ── The header upright: ←, the title, and on Collection the search field and ♪ ── */
+:where(html.is-phone) .sidebar-toggle { display: none; }
+:where(html.is-phone) .main-header { padding: calc(6px + env(safe-area-inset-top)) 12px 4px; }
+:where(html.is-phone) .top-bar { flex-direction: row; flex-wrap: nowrap; align-items: center; gap: 8px; margin-bottom: 6px; }
+:where(html.is-phone) .top-bar > div:first-child { min-width: 0; flex: 0 1 auto; }
+:where(html.is-phone) .view-title { font-size: 1.15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+[data-viewer]:where(.is-phone) .view-title { flex: none; max-width: 70%; }
+:where(html.is-phone) .view-subtitle { display: none; }
+:where(html.is-phone) .top-bar-controls { order: -1; margin-left: 0; }
+:where(html.is-phone) .top-bar-controls > :not(:first-child) { display: none; }
+html:not(.can-back):where(.is-phone) .top-bar-controls { display: none; }
+:where(html.is-phone) .top-bar-back-btn { position: relative; width: 36px; height: 36px; }
+:where(html.is-phone) .top-bar-back-btn::after { content: ''; position: absolute; inset: -4px; }
+:where(html.is-phone) .search-container { flex: 1 1 140px; min-width: 0; max-width: none; width: auto; }
+:where(html.is-phone) .listen-btn { min-width: 36px; min-height: 36px; }
+:where(html.is-phone) .section-tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-bottom: 0.5rem; }
+:where(html.is-phone) .section-tabs::-webkit-scrollbar { display: none; }
+:where(html.is-phone) .section-tab { flex: none; }
+:where(html.is-phone) .main-scroll { padding: 12px 12px 16px; }
+/* Safari zooms the page on a field under 16px. */
+:where(html.is-phone) input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), :where(html.is-phone) select, :where(html.is-phone) textarea { font-size: 16px; }
+
+/* ── The player: compact, above the tab bar ── */
+:where(html.is-phone) .local-player { height: 56px; grid-template-columns: minmax(0, 1fr) auto; gap: 4px; padding: 2px 4px 0 12px; }
+:where(html.is-phone) .local-player-secondary,
+:where(html.is-phone) .local-player [data-player-action="shuffle"],
+:where(html.is-phone) .local-player [data-player-action="previous"],
+:where(html.is-phone) .local-player [data-player-action="repeat"] { display: none; }
+:where(html.is-phone) .local-player-transport { gap: 0; }
+:where(html.is-phone) .local-player-icon { width: 44px; height: 44px; padding: 13px; }
+:where(html.is-phone) .local-player-toggle { width: 44px; height: 44px; }
+
+/* ── The queue: the whole screen, closed by × or by pulling its grab bar down ── */
+:where(html.is-phone) body:has(.queue-panel:not([hidden])) .local-player-host { z-index: 130; }
+:where(html.is-phone) .queue-panel {
+    position: fixed; inset: 0; width: auto; max-height: none; border: 0; border-radius: 0; box-shadow: none;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+:where(html.is-phone) .queue-panel-body { flex: 1 1 auto; }
+:where(html.is-phone) .queue-panel > .rs-grab { display: grid; }
+:where(html.is-phone) .queue-menu-btn { opacity: 1; }
+:where(html.is-phone) .queue-row { min-height: 48px; }
+
+/* ── Landscape (turned, or drawn sideways): the player and the tab bar share one row ── */
+html.is-landscape:where(.is-phone) body { grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: minmax(0, 1fr) auto; }
+html.is-landscape:where(.is-phone) .app-container { grid-column: 1 / -1; }
+html.is-landscape:where(.is-phone) .local-player-host { grid-row: 2; grid-column: 1; }
+html.is-landscape:where(.is-phone) .tab-bar-host { grid-row: 2; grid-column: 2; padding-bottom: 0; border-left: 1px solid var(--hairline-soft); }
+html.is-landscape:where(.is-phone) body:not(:has(> .local-player-host:not([hidden]))) .tab-bar-host { grid-column: 1 / -1; border-left: 0; }
+html.is-landscape:where(.is-phone) .tab-bar-item { flex: none; min-height: 44px; padding: 0 14px; }
+html.is-landscape:where(.is-phone) .local-player { height: 44px; }
+/* Turned for real the body also pads the home bar; drawn sideways that edge is the view's right. */
+html.is-landscape:where(.is-phone) body:has(> .tab-bar-host),
+html.is-landscape:where(.is-phone) body:has(> .tab-bar-host):has(> .local-player-host) { --dock-h: calc(45px + env(safe-area-inset-bottom)); }
+html.is-sideways:where(.is-phone) body:has(> .tab-bar-host),
+html.is-sideways:where(.is-phone) body:has(> .tab-bar-host):has(> .local-player-host) { --dock-h: 45px; }
+html.is-landscape:where(.is-phone) .queue-panel > .rs-grab { display: none; }
+/* Sideways the notch is the view's left edge and the home bar its right. */
+html.is-sideways:where(.is-phone) .queue-panel { padding: 0 env(safe-area-inset-bottom) 0 env(safe-area-inset-top); }
+
+/* ── Part 3: one column on every screen ── */
+.row-menu-btn { display: none; }
+/* Pages without a search field keep their title at the start. */
+:where(html.is-phone) .top-bar { justify-content: flex-start; }
+
+/* Track lists (Collection's, entity pages', the viewer's): title, then artist · album; a tap
+   plays, ⋯ is the menu (phone-rows.js). Other library tables keep their columns. */
+:where(html.is-phone) .track-table thead { display: none; }
+:where(html.is-phone) .track-table, :where(html.is-phone) .track-table tbody { display: block; width: 100%; }
+:where(html.is-phone) .track-table tr.vt-spacer, :where(html.is-phone) .track-table tr.vt-spacer > td { display: block; padding: 0; border: 0; }
+:where(html.is-phone) .track-table tr.library-table-row {
+    display: grid; grid-template-columns: minmax(0, max-content) minmax(0, 1fr) 44px;
+    grid-template-areas: "title title menu" "artist album menu";
+    align-items: center; height: 60px; padding: 0 0 0 4px; border-bottom: 1px solid var(--hairline-soft);
+    -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; -webkit-user-drag: none;
+}
+:where(html.is-phone) .track-table tr.library-table-row > td { display: none; padding: 0; border: 0; height: auto; }
+:where(html.is-phone) .track-table tr.library-table-row > td[data-col="title"],
+:where(html.is-phone) .track-table tr.library-table-row > td[data-col="artist"],
+:where(html.is-phone) .track-table tr.library-table-row > td[data-col="album"] { display: block; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+:where(html.is-phone) .track-table td[data-col="title"] { grid-area: title; font-size: 15px; color: var(--text); }
+:where(html.is-phone) .track-table td[data-col="artist"] { grid-area: artist; font-size: 13px; color: var(--text-dim); }
+:where(html.is-phone) .track-table td[data-col="album"] { grid-area: album; font-size: 13px; color: var(--text-faint); }
+:where(html.is-phone) .track-table td[data-col="album"]:not(:empty)::before { content: '\00a0·\00a0'; }
+/* Sorted by BPM or key, the second line shows that value instead of the album. */
+:where(html.is-phone) .track-table[data-sort="bpm"] tr.library-table-row:has(> td[data-col="bpm"]) > td[data-col="album"],
+:where(html.is-phone) .track-table[data-sort="key"] tr.library-table-row:has(> td[data-col="key"]) > td[data-col="album"],
+:where(html.is-phone) .track-table[data-sort="camelot"] tr.library-table-row:has(> td[data-col="camelot"]) > td[data-col="album"] { display: none; }
+:where(html.is-phone) .track-table[data-sort="bpm"] tr.library-table-row > td[data-col="bpm"],
+:where(html.is-phone) .track-table[data-sort="key"] tr.library-table-row > td[data-col="key"],
+:where(html.is-phone) .track-table[data-sort="camelot"] tr.library-table-row > td[data-col="camelot"] { display: block; grid-area: album; min-width: 0; white-space: nowrap; overflow: hidden; font-size: 13px; color: var(--text-faint); }
+:where(html.is-phone) .track-table[data-sort="bpm"] td[data-col="bpm"]:not(:empty)::before,
+:where(html.is-phone) .track-table[data-sort="key"] td[data-col="key"]:not(:empty)::before,
+:where(html.is-phone) .track-table[data-sort="camelot"] td[data-col="camelot"]:not(:empty)::before { content: '\00a0·\00a0'; }
+/* The playing row keeps its accent; a selected row is one band, in its legible colour. */
+:where(html.is-phone) .track-table tr.row-playing > td { color: var(--accent-dim); }
+:where(html.is-phone) .track-table tr.library-table-row.row-selected { background: var(--sorbet, var(--accent)); }
+:where(html.is-phone) .track-table tr.row-selected > td, :where(html.is-phone) .track-table tr.row-selected .row-menu-btn { color: var(--on-sorbet, var(--on-accent)); }
+:where(html.is-phone) .track-table tr.library-table-row > td[data-col="__menu"] { display: grid; grid-area: menu; place-items: center; }
+/* The whole row plays: its names are links on the desktop, here ⋯ opens the artist or label. */
+:where(html.is-phone) .track-table tr.library-table-row > td:not([data-col="__menu"]) * { pointer-events: none; }
+/* Menus on a phone: no keyboard hints, rows a thumb can hit. */
+:where(html.is-phone) .row-context-menu kbd { display: none; }
+:where(html.is-phone) .row-context-menu { max-height: calc(var(--view-h) - 8px); overflow-y: auto; overscroll-behavior: contain; }
+:where(html.is-phone) .row-context-menu .row-context-item { min-height: 44px; }
+:where(html.is-phone) .row-menu-btn { display: inline-grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 50%; background: none; color: var(--text-dim); font: inherit; font-size: 18px; cursor: pointer; }
+:where(html.is-phone) .row-menu-btn:active { background: var(--bg-hover); }
+
+/* Artists, Albums, Labels and Tags: one column of rows. */
+:where(html.is-phone) .index-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+:where(html.is-phone) .entity-tile {
+    display: grid; grid-template-columns: 44px minmax(0, 1fr); grid-template-areas: "art name" "art sub";
+    column-gap: 12px; align-items: center; min-height: 60px; padding: 8px 0; border-bottom: 1px solid var(--hairline-soft);
+}
+:where(html.is-phone) .entity-tile-art { grid-area: art; width: 44px; margin: 0; }
+:where(html.is-phone) .entity-tile-name { grid-area: name; }
+:where(html.is-phone) .entity-tile-sub { grid-area: sub; }
+
+/* Gig pages and the gig panel: no drag on a phone; ⋯ moves a track (Add to playlist…, Remove). */
+:where(html.is-phone) .gig-track-handle, :where(html.is-phone) .gig-track-sound { display: none; }
+:where(html.is-phone) .gig-track-row, :where(html.is-phone) .gig-track-row:not(.gig-track-readonly) {
+    grid-template-columns: 28px minmax(0, 1fr) auto 36px 40px;
+    grid-template-areas: "sel title title x menu" "sel artist bpm x menu";
+    gap: 0 8px; padding: 6px 4px 6px 8px; min-height: 56px;
+}
+:where(html.is-phone) .gig-track-select { grid-area: sel; }
+:where(html.is-phone) .gig-track-title { grid-area: title; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+:where(html.is-phone) .gig-track-artist { grid-area: artist; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px; color: var(--text-dim); }
+:where(html.is-phone) .gig-track-bpm { grid-area: bpm; font-size: 13px; color: var(--text-faint); }
+:where(html.is-phone) .gig-track-remove { grid-area: x; width: 36px; height: 40px; }
+:where(html.is-phone) .gig-track-row .row-menu-btn { grid-area: menu; width: 40px; height: 40px; }
+:where(html.is-phone) .gp-track .row-menu-btn { width: 40px; height: 40px; }
+:where(html.is-phone) .gigs-table { display: block; overflow-x: auto; }
+
+/* Listen: a sheet across the top of the page. */
+:where(html.is-phone) .listen-sheet {
+    position: fixed; top: calc(56px + env(safe-area-inset-top)); left: 8px; right: 8px; width: auto; max-width: none;
+    max-height: calc(var(--view-h) - 200px);
+}
+
+/* Info's tag editor: labels over their fields, Save and Undo write full size. */
+:where(html.is-phone) .detail-panel .ed { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+:where(html.is-phone) .detail-panel .ed .in { min-height: 40px; }
+:where(html.is-phone) .detail-panel .ed .act button { min-height: 44px; padding: 0 14px; }
+
+/* Touch shows what hover shows on the desktop. */
+@media (hover: none) {
+    .filter-pill .x { opacity: 1; }
+    .chart-sel-pill .chart-sel-pill-x { opacity: 1; }
+    .detail-panel .ed .tagchip button { visibility: visible; }
+    .bc-diff-link, .lg-refresh { opacity: 1; }
+    .tool-chip .tool-x { display: inline; }
+}
+
+/* The seek bar's thumb shows without hover on touch screens. */
+@media (hover: none) {
+    .local-player .local-player-seek::-webkit-slider-thumb { opacity: 1; }
+    .local-player .local-player-seek::-moz-range-thumb { opacity: 1; }
+}

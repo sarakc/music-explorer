@@ -1,0 +1,439 @@
+/* Batch Tag Editor drawer
+   Slides in from the right. Mirrors .filter-pill styling for pills. */
+
+.bte-root {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.bte-root.bte-open {
+    pointer-events: auto;
+}
+
+.bte-backdrop {
+    position: absolute;
+    inset: 0;
+    background: var(--backdrop);
+    opacity: 0;
+    transition: opacity 200ms ease;
+    pointer-events: none;
+}
+
+.bte-root.bte-open .bte-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.bte-drawer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 520px;
+    max-width: 100vw;
+    height: 100vh;
+    background: var(--bg-raised);
+    border-left: 1px solid var(--border);
+    box-shadow: -8px 0 24px var(--overlay-soft);
+    transform: translateX(100%);
+    transition: transform 200ms ease;
+    display: flex;
+    flex-direction: column;
+    pointer-events: auto;
+}
+
+/* Closed, the drawer sits just off the right edge: its shadow would show along it. */
+.bte-root:not(.bte-open) .bte-drawer { box-shadow: none; }
+.bte-root.bte-open .bte-drawer {
+    transform: translateX(0);
+}
+
+/* Header */
+.bte-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.bte-title-wrap { min-width: 0; }
+
+.bte-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.01em;
+}
+
+.bte-count {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-top: 2px;
+}
+
+.bte-close {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--text-dim);
+    cursor: pointer;
+    padding: 0 4px;
+    border-radius: var(--radius);
+}
+
+.bte-close:hover {
+    color: var(--text);
+    background: var(--bg-hover);
+}
+
+/* Tabs — Genre+Subgenre / Tags. Pill-style, same pattern as Favorites/Chart tabs. */
+.bte-tabs {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    margin: 0.75rem 1.25rem 0;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    align-self: flex-start;
+}
+.bte-tab {
+    padding: 5px 14px;
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+    color: var(--text-dim);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: color 0.12s, background 0.12s;
+}
+.bte-tab:hover { color: var(--text); }
+.bte-tab.is-active {
+    background: var(--bg-raised);
+    color: var(--text);
+    box-shadow: 0 1px 2px color-mix(in srgb, var(--text) 8%, transparent);
+}
+.bte-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+/* Body */
+.bte-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.bte-section-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    margin-bottom: 0.5rem;
+}
+
+.bte-hint {
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    margin-bottom: 0.5rem;
+}
+
+.bte-search {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 0.5rem;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    transition: border-color 0.12s;
+}
+.bte-search:focus {
+    outline: none;
+    border-color: var(--accent-warm);
+}
+
+.bte-empty {
+    font-size: 0.8rem;
+    color: var(--text-faint);
+    font-style: italic;
+    padding: 4px 2px;
+    flex-basis: 100%;
+}
+
+.bte-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.bte-pills-separator {
+    flex-basis: 100%;
+    height: 1px;
+    background: var(--border);
+    margin: 6px 0;
+    opacity: 0.7;
+}
+
+/* Base pill (mirrors .filter-pill) */
+.bte-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    background: var(--accent-warm-soft);
+    border: 1.5px solid var(--accent-warm);
+    color: var(--accent-warm);
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.12s, color 0.12s, border-color 0.12s, opacity 0.12s;
+}
+
+.bte-pill:hover {
+    background: var(--accent-warm);
+    color: var(--on-accent);
+}
+
+.bte-pill:hover .bte-pill-count {
+    color: var(--on-accent);
+    opacity: 0.85;
+}
+
+.bte-pill-count {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--accent-warm);
+    opacity: 0.7;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Seed-vocab pills: muted until clicked */
+.bte-pill-seed {
+    opacity: 0.5;
+}
+.bte-pill-seed:hover {
+    opacity: 1;
+}
+.bte-pill-seed.bte-pill-active,
+.bte-pill-seed.bte-pill-add,
+.bte-pill-seed.bte-pill-remove {
+    opacity: 1;
+}
+
+/* Active (selected single-select) */
+.bte-pill-active {
+    background: var(--accent-warm);
+    color: var(--on-accent);
+}
+.bte-pill-active .bte-pill-count {
+    color: var(--on-accent);
+    opacity: 0.85;
+}
+
+/* Clear pills: cool slate tone */
+.bte-pill-clear {
+    background: var(--accent-cool-soft);
+    border-color: var(--accent-cool);
+    color: var(--accent-cool);
+}
+.bte-pill-clear:hover {
+    background: var(--accent-cool);
+    color: var(--on-accent);
+}
+.bte-pill-clear.bte-pill-active {
+    background: var(--accent-cool);
+    color: var(--on-accent);
+}
+
+/* Tag tri-state */
+.bte-pill-tag.bte-pill-add {
+    background: var(--accent-warm);
+    color: var(--on-accent);
+    border-color: var(--accent-warm);
+}
+.bte-pill-tag.bte-pill-add .bte-pill-count {
+    color: var(--on-accent);
+    opacity: 0.85;
+}
+
+/* Remove-pill: uses the "cool" accent in a muted register so it reads
+   as destructive-but-inactive without leaving theme space. */
+.bte-pill-tag.bte-pill-remove {
+    background: var(--accent-cool-soft);
+    border-color: var(--accent-cool);
+    color: var(--accent-cool);
+    text-decoration: line-through;
+}
+.bte-pill-tag.bte-pill-remove .bte-pill-label {
+    text-decoration: line-through;
+}
+.bte-pill-tag.bte-pill-remove .bte-pill-count {
+    color: var(--accent-cool);
+    opacity: 0.7;
+}
+.bte-pill-tag.bte-pill-remove:hover {
+    background: var(--accent-cool);
+    color: var(--on-accent);
+}
+.bte-pill-tag.bte-pill-remove:hover .bte-pill-count {
+    color: var(--on-accent);
+    opacity: 0.9;
+}
+
+/* Footer */
+.bte-footer {
+    border-top: 1px solid var(--border);
+    padding: 0.85rem 1.25rem 1rem;
+    flex-shrink: 0;
+    background: var(--bg-raised);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.bte-diff-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--text);
+    min-height: 1.2rem;
+}
+
+.bte-diff-count {
+    font-weight: 600;
+}
+
+.bte-diff-none {
+    color: var(--text-faint);
+    font-style: italic;
+    font-size: 0.8rem;
+}
+
+.bte-diff-toggle {
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    font-family: inherit;
+}
+.bte-diff-toggle:hover {
+    color: var(--accent-dim);
+}
+
+.bte-diff-sample {
+    max-height: 180px;
+    overflow-y: auto;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.6rem;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    line-height: 1.45;
+}
+
+.bte-diff-row {
+    padding: 2px 0;
+    border-bottom: 1px dashed var(--border);
+}
+.bte-diff-row:last-child { border-bottom: none; }
+
+.bte-diff-track {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.bte-diff-more {
+    margin-top: 4px;
+    font-style: italic;
+    color: var(--text-faint);
+}
+
+.bte-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.bte-btn {
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    border: 1.5px solid transparent;
+    transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+}
+
+.bte-btn-primary {
+    background: var(--accent-warm);
+    border-color: var(--accent-warm);
+    color: var(--on-accent);
+}
+.bte-btn-primary:hover {
+    background: var(--accent-dim);
+    border-color: var(--accent-dim);
+}
+
+.bte-btn-secondary {
+    background: var(--bg-raised);
+    border-color: var(--border);
+    color: var(--text);
+}
+.bte-btn-secondary:hover {
+    background: var(--bg-hover);
+    border-color: var(--text-dim);
+}
+
+.bte-btn-disabled,
+.bte-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Collection table — selection bar count (surface + actions live in components.css). */
+.selection-count {
+    flex: 0 0 auto;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Live preview: pending changes shown in italic accent while drawer is open */
+.library-table-row .bte-preview {
+    font-style: italic;
+    color: var(--accent-warm);
+    opacity: 0.9;
+}
+.library-table-row .bte-preview-old {
+    text-decoration: line-through;
+    color: var(--text-faint);
+    margin-right: 6px;
+    font-style: normal;
+}

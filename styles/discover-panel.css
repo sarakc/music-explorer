@@ -1,0 +1,57 @@
+/* The side panel's Discover tab (discover-panel.js) and previews in the player bar (preview.js). */
+
+.dx { padding: 12px 14px 18px; display: flex; flex-direction: column; gap: 10px; }
+/* One card per group, drawn like Info's Similar card. */
+.dx-card { border: 1px solid var(--hairline-soft); border-radius: var(--radius-sm); background: var(--bg); padding: 8px 6px 6px; }
+.dx-head { display: flex; align-items: center; gap: 8px; padding: 2px 6px 6px; font-size: 12.5px; }
+.dx-head b { color: var(--text); font-weight: 600; margin-right: auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dx-dig { flex: none; }
+.dx-dug { flex: none; font-size: 11.5px; color: var(--text-faint); }
+.dx-list { list-style: none; margin: 0; padding: 0; }
+.dx-row { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 6px 4px; border-radius: var(--radius-sm); position: relative; }
+.dx-row:hover { background: var(--bg-hover); }
+.dx-art { width: 40px; height: 40px; border-radius: 3px; background: linear-gradient(135deg, var(--accent-cool-soft), var(--accent-soft)); position: relative; overflow: hidden; }
+.dx-art.round { border-radius: 50%; }
+.dx-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.dx-play { position: absolute; inset: 0; border: 0; display: grid; place-items: center; color: var(--bg-raised); font-size: 13px; background: rgba(46, 35, 34, 0.35); opacity: 0; cursor: pointer; }
+.dx-row:hover .dx-play, .dx-play:focus-visible, .dx-row.is-playing .dx-play { opacity: 1; }
+.dx-main { min-width: 0; border: 0; background: none; padding: 0; text-align: left; font: inherit; color: inherit; cursor: pointer; display: grid; }
+.dx-t { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dx-s { font-size: 11.5px; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dx-row.is-playing .dx-t { color: var(--accent-dim); }
+.dx-acts { display: flex; gap: 2px; opacity: 0; }
+.dx-row:hover .dx-acts, .dx-acts:focus-within { opacity: 1; }
+/* In a card the hover actions sit over the row's end instead of keeping its width. */
+.dx-card .dx-row { grid-template-columns: 40px minmax(0, 1fr); }
+.dx-card .dx-acts { position: absolute; right: 4px; top: 6px; height: 40px; align-items: center; padding-left: 12px; background: linear-gradient(to right, transparent, var(--bg-hover) 12px); }
+.dx-card .dx-acts:empty { display: none; }
+.dx-video { grid-column: 1 / -1; }
+.dx-video:empty { display: none; }
+.preview-frame { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: var(--radius-sm); margin-top: 6px; display: block; }
+.dx-sep { font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.08em; padding: 10px 6px 4px; }
+.dx-note { font-size: 12px; color: var(--text-dim); padding: 6px; margin: 0; }
+
+/* The player bar in preview mode: the strip stands in for the track. */
+.local-player-host.is-preview .local-player { display: none; }
+.preview-strip { height: 48px; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 14px; padding: 2px 16px 0; }
+.preview-strip[hidden] { display: none; }
+.pv-pill { font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-cool); border: 1px solid var(--accent-cool-soft); border-radius: 999px; padding: 1px 7px; }
+.pv-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.pv-copy { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pv-sub { color: var(--text-dim); font-weight: 400; }
+.pv-transport { display: flex; gap: 12px; align-items: center; }
+.pv-transport button:disabled { opacity: 0.4; cursor: default; }
+.pv-end { display: flex; gap: 12px; align-items: center; justify-content: flex-end; font-size: 12px; color: var(--text-dim); }
+.pv-x { border: 0; background: none; font-size: 16px; color: var(--text-dim); cursor: pointer; }
+.pv-x:hover { color: var(--text); }
+
+/* Bandcamp · Discogs · YouTube at the end of Info (site-links.js): the key after each, a search dimmer. */
+.site-links a::after { content: attr(data-key); margin-left: 4px; font-size: 10.5px; color: var(--text-faint); opacity: 0.7; }
+.site-links a.is-search { opacity: 0.75; }
+
+/* A pasted link's row under the search field (paste-link.js). */
+.search-container { position: relative; }
+.paste { position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 40; background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12); padding: 8px; }
+.paste-src { font-size: 11px; color: var(--text-faint); padding: 0 4px 6px; }
+.paste .dx-acts { opacity: 1; }
+.paste .dx-main { cursor: default; }

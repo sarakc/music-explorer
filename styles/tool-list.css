@@ -1,0 +1,74 @@
+/* Tools' shared list (web/js/tool-list.js): one header row, then rows of
+   ▶ · track · fixes, one line tall where the fixes fit. Quiet by design:
+   detail is on hover. */
+.tool-list { max-width: 1100px; }
+.tool-bar { display: flex; align-items: center; gap: 14px; margin: 0 0 6px; }
+.tool-sp { flex: 1; }
+.tool-approve:disabled { opacity: 0.45; cursor: default; }
+.tool-filter { font: inherit; font-size: 0.85rem; border: 0; background: transparent; color: var(--text); padding: 4px 2px; cursor: pointer; }
+.tool-link { font: inherit; font-size: 0.85rem; background: none; border: 0; padding: 0; color: var(--text-dim); cursor: pointer; }
+.tool-link:hover { color: var(--text); }
+.tool-link[hidden] { display: none; }
+.tool-more { position: relative; }
+.tool-more > summary { list-style: none; cursor: pointer; color: var(--text-faint); padding: 0 4px; font-size: 1rem; }
+.tool-more > summary::-webkit-details-marker { display: none; }
+.tool-menu { position: absolute; right: 0; top: 100%; z-index: 20; min-width: 180px; padding: 4px; border-radius: var(--radius); background: var(--bg-raised); box-shadow: 0 8px 24px var(--overlay-soft); border: 1px solid var(--hairline-soft); }
+.tool-menu button { display: block; width: 100%; text-align: left; font: inherit; font-size: 0.85rem; background: none; border: 0; padding: 6px 10px; border-radius: var(--radius-sm); color: var(--text); cursor: pointer; }
+.tool-menu button:hover { background: var(--bg-hover); }
+.tool-state, .tool-note { color: var(--text-faint); font-size: 0.85rem; padding: 18px 8px; }
+.tool-note { padding: 0 8px 6px; font-size: 0.8rem; }
+
+.tool-row { display: grid; grid-template-columns: 32px minmax(150px, 30%) minmax(0, 1fr); align-items: start; gap: 0 14px; padding: 5px 8px; border-bottom: 1px solid var(--hairline); border-radius: var(--radius-sm); }
+.tool-row:hover { background: var(--bg-hover); }
+.tool-row.is-selected { background: color-mix(in srgb, var(--accent-cool-soft) 55%, transparent); }
+.tool-play { width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--hairline-soft); background: var(--bg-raised); color: var(--text); font-size: 0.7rem; padding: 0; cursor: pointer; visibility: hidden; }
+.tool-row:hover .tool-play, .tool-row.is-playing .tool-play, .tool-play:focus-visible { visibility: visible; }
+.tool-row.is-playing .tool-play { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.tool-row.is-playing .tool-title { color: var(--accent-dim); }
+.tool-track { cursor: pointer; min-width: 0; line-height: 26px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tool-title { font-weight: 500; }
+.tool-sub { color: var(--text-faint); font-size: 0.8rem; margin-left: 4px; }
+.tool-conflict { color: var(--error); }
+.tool-fixes { min-width: 0; padding-top: 3px; }
+.tool-fixes.is-named { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 2px 10px; align-items: baseline; }
+.tool-line { display: flex; flex-wrap: wrap; align-items: baseline; }
+.tool-part { display: contents; }
+.tool-k { font-size: 0.64rem; text-transform: uppercase; letter-spacing: var(--tracking-caps); color: var(--text-faint); }
+.tool-have { font-size: 0.8rem; color: var(--text-dim); margin-right: 8px; }
+
+.tool-chip { position: relative; display: inline-flex; align-items: center; gap: 4px; font: inherit; font-size: 0.78rem; border-radius: 999px; padding: 1px 9px; margin: 0 4px 3px 0; cursor: pointer; border: 1px dashed var(--accent-dim); background: transparent; color: var(--accent-dim); }
+.tool-chip.is-on { border-style: solid; background: var(--accent-soft); color: var(--text); }
+.tool-chip.is-on::before { content: '✓'; font-size: 0.7rem; }
+.tool-chip.is-declined { text-decoration: line-through; border-color: var(--hairline-soft); color: var(--text-faint); }
+.tool-chip del { color: var(--accent); }
+.tool-chip ins { text-decoration: none; color: var(--accent-cool); }
+.tool-x { display: none; margin-left: 2px; color: var(--text-faint); }
+.tool-chip:hover .tool-x { display: inline; }
+.tool-chip.is-declined .tool-x { display: none; }
+.tool-x:hover { color: var(--text); }
+.tool-typed { font: inherit; font-size: 0.78rem; border: 0; border-radius: 999px; padding: 1px 9px; margin: 0 4px 3px 0; background: var(--accent-cool-soft); color: var(--accent-cool); cursor: pointer; }
+.tool-box { font: inherit; font-size: 0.78rem; border: 0; border-bottom: 1px dashed var(--hairline-soft); background: transparent; color: var(--text); padding: 1px 2px; width: 104px; margin: 0 10px 3px 2px; }
+.tool-box::placeholder { color: var(--text-faint); }
+.tool-box:focus { outline: none; border-bottom-color: var(--accent-cool); }
+.tool-box.is-invalid { border-bottom-color: var(--error); }
+
+/* Cleanup › Discogs (identity-tool.js): rows are artists and labels, with no ▶. */
+.tool-list.is-entities .tool-row { grid-template-columns: minmax(150px, 30%) minmax(0, 1fr); }
+.tool-list.is-entities .tool-track { cursor: default; }
+.tool-chip.is-suggested { border-style: solid; }
+.tool-chip.is-none:not(.is-on) { border-color: var(--hairline-soft); color: var(--text-faint); }
+
+/* Apply sits at the right of the Tools tab row; Cleanup's sub-tools are links under it. */
+.section-tabs:has(.section-tab-apply) { align-items: flex-end; }
+.section-tab-apply { margin: 0 0 6px auto; font-size: 0.82rem; color: var(--text-dim); }
+.section-tab-apply button { font: inherit; background: none; border: 0; padding: 0; margin-left: 6px; color: var(--accent-cool); font-weight: 600; cursor: pointer; }
+.section-subtabs { display: flex; gap: 18px; margin: -0.25rem 0 0.75rem; font-size: 0.82rem; }
+.section-subtabs[hidden] { display: none; }
+.section-subtab { color: var(--text-faint); text-decoration: none; }
+.section-subtab:hover, .section-subtab.is-active { color: var(--text); }
+
+@media (max-width: 900px) {
+    .tool-row { grid-template-columns: 30px minmax(0, 1fr); }
+    .tool-fixes { grid-column: 2; padding-top: 0; }
+    .tool-play { visibility: visible; }
+}

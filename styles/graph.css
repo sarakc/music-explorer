@@ -1,0 +1,258 @@
+/* The graph: the atlas, a rectangle on the skin's own ground in the content area. The
+   canvas reads its colours from the skin's tokens (--text*, --bg), and so do the controls over it;
+   Night sky (.is-night) sets its own. */
+/* The map's own host beside the page (view-stage.js): one of the two fills the content region. */
+.atlas-host { flex: 1 1 auto; min-height: 0; min-width: 0; display: flex; flex-direction: column; }
+.atlas-host[hidden] { display: none; }
+
+/* The graph and its left panel (Favorites) side by side. */
+.atlas-shell { position: relative; flex: 1 1 auto; min-height: 0; display: flex; padding: 12px 16px 16px; }
+.atlas {
+    position: relative; flex: 1 1 auto; min-width: 0; min-height: 320px; overflow: hidden; user-select: none; touch-action: none;
+    border: 0; border-radius: 0; box-shadow: none; background: var(--bg); color: var(--text);
+}
+/* Night sky: the graph's own fixed ground and ink, the same on every skin; the rest of the app keeps its skin. */
+.atlas.is-night {
+    --bg: #16171b; --bg-raised: #16171b; --bg-hover: #222328;
+    --text: #e9e6df; --text-dim: #b4b2ae; --text-faint: #8a8987; /* ink at about 75% and 55% on the ground */
+    --border: #2b2c31; --hairline: #2b2c31; --hairline-soft: #2b2c31; --overlay-soft: rgba(0, 0, 0, 0.45);
+}
+body.atlas-full .atlas-shell { padding: 0; }
+.atlas-canvas { position: absolute; inset: 0; display: block; touch-action: none; cursor: grab; }
+.atlas-canvas:active { cursor: grabbing; }
+
+/* The visualizer (atlas-visualizer.js): its effects layer sits behind the graph's canvas, the graph's
+   controls step aside, and its own bar fades while the pointer rests. */
+.atlas-fx { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+.atlas.is-viz .atlas-top, .atlas.is-viz .atlas-corner, .atlas.is-viz .atlas-dom,
+.atlas.is-viz .atlas-note, .atlas.is-viz .atlas-status, .atlas.is-viz .atlas-tip { display: none; }
+.atlas.is-viz .atlas-canvas { cursor: default; }
+.atlas.is-viz.is-viz-idle, .atlas.is-viz.is-viz-idle .atlas-canvas { cursor: none; }
+.atlas-viz-bar {
+    position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 6;
+    display: flex; align-items: center; gap: 6px; max-width: calc(100% - 24px); flex-wrap: wrap; justify-content: center;
+    font-size: 12px; line-height: 16px; color: var(--text-dim); transition: opacity 0.4s;
+}
+.atlas.is-viz-idle .atlas-viz-bar { opacity: 0; }
+.atlas-viz-bar .atlas-switch button { padding: 4px 12px; border: 0; background: none; color: var(--text-dim); font: inherit; cursor: pointer; }
+.atlas-viz-bar .atlas-switch button[aria-pressed="true"] { color: var(--text); background: var(--bg-hover); }
+.atlas-viz-amount { display: inline-flex; align-items: center; gap: 6px; padding: 0 4px; }
+.atlas-viz-amount input { width: 90px; accent-color: var(--text-dim); }
+@media (prefers-reduced-motion: reduce) { .atlas-viz-bar { transition: none; } }
+
+/* Name hit targets and keyboard focus: invisible buttons over the canvas. */
+.atlas-dom { position: absolute; inset: 0; pointer-events: none; }
+.atlas-dom.is-moving { visibility: hidden; }
+.atlas-hit {
+    position: absolute; padding: 0; border: 0; border-radius: 6px; background: transparent;
+    pointer-events: auto; cursor: pointer;
+}
+.atlas-hit:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+
+.atlas-top { position: absolute; top: 12px; left: 16px; right: 16px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 8px; pointer-events: none; z-index: 5; }
+.atlas-top > * { pointer-events: auto; }
+.atlas-group { display: flex; align-items: center; gap: 6px; }
+.atlas-chip {
+    border: 1px solid var(--hairline-soft); background: var(--bg-raised); color: var(--text-dim);
+    font: inherit; font-size: 12px; line-height: 16px; padding: 4px 10px; border-radius: 999px; cursor: pointer;
+}
+.atlas-chip:hover, .atlas-chip:focus-visible, .atlas-chip[aria-expanded="true"], .atlas-chip[aria-pressed="true"] { color: var(--text); background: var(--bg-hover); }
+.atlas-chip[hidden] { display: none; }
+.atlas-chip:disabled { opacity: 0.45; cursor: default; }
+/* The viewer's Filter chip: lit while a filter is on, with its count. */
+.atlas-chip.on { color: var(--accent-dim); background: var(--accent-soft); }
+.atlas-chip .n { font-size: 11px; background: var(--bg); border-radius: 999px; padding: 0 5px; margin-left: 2px; }
+.atlas-icon { display: inline-grid; place-items: center; padding: 4px 7px; }
+.atlas-switch { display: inline-flex; border: 1px solid var(--hairline-soft); border-radius: 999px; overflow: hidden; font-size: 12px; line-height: 16px; background: var(--bg-raised); }
+.atlas-switch[hidden] { display: none; }
+.atlas-switch a { padding: 4px 12px; color: var(--text-dim); text-decoration: none; }
+.atlas-switch a.is-active { color: var(--text); background: var(--bg-hover); }
+/* Bottom right: − and + (more or less of the map, or of a selection's rings) and the whole map. */
+.atlas-corner { position: absolute; right: 16px; bottom: 14px; display: flex; align-items: center; gap: 6px; z-index: 5; }
+.atlas-zoom { display: inline-flex; align-items: center; border: 1px solid var(--hairline-soft); border-radius: 999px; overflow: hidden; background: var(--bg-raised); color: var(--text-dim); font-size: 12px; line-height: 16px; }
+.atlas-zoom button { padding: 4px 9px; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; user-select: none; touch-action: none; }
+.atlas-zoom button:hover, .atlas-zoom button:focus-visible { color: var(--text); background: var(--bg-hover); outline: none; }
+#atlasLens button { display: inline-grid; place-items: center; padding: 4px 7px; }
+.atlas-zoom button[aria-disabled="true"] { color: var(--text-faint); background: none; cursor: default; }
+/* A chip's menu over the graph: Show, and the Search chip's field on a phone and in the viewer. */
+.atlas-pop-host { position: relative; }
+.atlas-pop {
+    position: absolute; top: calc(100% + 6px); z-index: 8; background: var(--bg-raised); border: 1px solid var(--border, var(--hairline-soft));
+    border-radius: 10px; box-shadow: 0 12px 32px var(--overlay-soft);
+}
+.atlas-pop[hidden] { display: none; }
+/* The Show menu (top right, beside Collection | Discover): Artists, Labels and Tags. */
+.show-pop { left: 0; display: flex; flex-direction: column; gap: 2px; padding: 6px; min-width: 132px; }
+.show-item { display: flex; align-items: center; gap: 8px; padding: 4px 6px; border-radius: var(--radius-sm, 6px); font-size: 12.5px; color: var(--text); cursor: pointer; }
+.show-item:hover, .show-item:focus-within { background: var(--bg-hover); }
+.show-item input { margin: 0; accent-color: var(--accent); }
+
+.atlas-lit-note { color: var(--text-dim); font-size: 12px; line-height: 16px; padding: 4px 6px; }
+.atlas-lit-note[hidden] { display: none; }
+.atlas-note {
+    position: absolute; left: 50%; bottom: 18%; transform: translateX(-50%); color: var(--text-dim); font-size: 13px; text-align: center;
+    background: var(--bg-raised); border: 1px solid var(--hairline-soft); border-radius: 999px; padding: 4px 12px;
+}
+.atlas-note[hidden] { display: none; }
+/* Show more and Show less, beside the focus's name. */
+.atlas-link { border: 0; background: none; font: inherit; color: var(--text-dim); text-decoration: underline; cursor: pointer; padding: 0; }
+
+.atlas-tip {
+    position: absolute; pointer-events: none; background: var(--bg-raised); border: 1px solid var(--border, var(--hairline-soft));
+    border-radius: 8px; padding: 6px 10px; font-size: 12px; box-shadow: 0 4px 14px var(--overlay-soft); max-width: 260px;
+}
+.atlas-tip[hidden] { display: none; }
+.atlas-tip-name { font-weight: 500; color: var(--text); }
+.atlas-tip-name span { color: var(--text-faint); font-weight: 400; margin-left: 4px; }
+.atlas-tip-why { color: var(--text-dim); margin-top: 2px; }
+/* The tip's ⓘ (Peek › Alt-click, on touch): a tap peeks at its node. The tip keeps no pointer but this. */
+.atlas-tip-peek { pointer-events: auto; font: inherit; font-size: 14px; line-height: 1; color: var(--text-dim); background: none; border: 0; cursor: pointer;
+    min-width: 32px; min-height: 32px; margin: -9px -10px -9px 2px; padding: 0; vertical-align: middle; }
+.atlas-tip-peek:hover { color: var(--text); }
+
+/* Discover: the bottom-left Discogs line. */
+.atlas-status { position: absolute; left: 16px; bottom: 14px; color: var(--text-dim); font-size: 12px; background: var(--bg-raised); border: 1px solid var(--hairline-soft); border-radius: 999px; padding: 3px 10px; }
+.atlas-status[hidden] { display: none; }
+.atlas-status a { color: var(--text-dim); }
+.atlas-status a:hover { color: var(--text); }
+.atlas-retry { font: inherit; color: var(--text-dim); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
+.atlas-retry:hover { color: var(--text); }
+
+
+/* Full screen: the graph takes the window; the sidebar and header step aside. */
+body.atlas-full .app-container { --sidebar-w: 0px; }
+body.atlas-full .app-container .sidebar { visibility: hidden; border-right-color: transparent; }
+/* Full screen keeps the tab controls (Grid | Graph, ☆, Filter) and the Filter band; titles, search and tab links step aside. */
+body.atlas-full .main-header > :not(.section-tabs, .filter-band-host, .filter-line-host) { display: none; }
+body.atlas-full .main-header .section-tab { display: none; }
+body.atlas-full .main-header .section-tabs { border-bottom: 0; }
+/* The visualizer takes the window whole: the header and the right-hand slot step aside too (the player stays). */
+body.atlas-viz .main-header, body.atlas-viz .right-slot { display: none; }
+body.atlas-viz .app-container { grid-template-columns: 0 minmax(0, 1fr); }
+
+/* The panel for an artist or label you don't own. */
+.op-releases { list-style: none; margin: 0; padding: 0; }
+.op-release { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto; column-gap: 6px; padding: 4px 0; border-bottom: 1px solid var(--hairline); cursor: pointer; }
+.op-release:hover .op-title, .op-release:focus-visible .op-title { text-decoration: underline; }
+.op-release:focus-visible { outline: none; }
+.op-title { font-size: 0.85rem; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.op-meta { grid-row: 2; font-size: 0.75rem; color: var(--text-dim); }
+.op-release .nr-act { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+.dp-chip.is-static { cursor: default; color: var(--text-dim); }
+a.dp-btn { text-decoration: none; display: inline-block; }
+
+/* ── The graph and Info on a phone (docs/specs/2026-11-21-phone-layout-design.md) ──
+   Every rule hangs off html.is-phone (phone.js's PHONE_QUERY as the page loads); sideways is html.is-sideways (main.css turns the body). */
+#atlasBack, #atlasGrid, #atlasList { display: none; }
+/* The map fills the screen: the graph's own chips are its controls. */
+:where(html.is-phone) .main-content:has(.is-atlas) .main-header { display: none; }
+:where(html.is-phone) body .app-container.has-slot-strip { grid-template-columns: minmax(0, 1fr); }
+:where(html.is-phone) body .app-container.has-slot-strip .main-content { padding-right: 0; }
+:where(html.is-phone) .atlas-shell { padding: 0; }
+:where(html.is-phone) .atlas { min-height: 0; }
+/* When Info narrows the map, the right-hand chips take a second row, still on the right. */
+:where(html.is-phone) .atlas-top { top: 6px; left: 8px; right: 8px; flex-wrap: wrap; row-gap: 6px; }
+:where(html.is-phone) .atlas-top > .atlas-group:last-child { margin-left: auto; }
+:where(html.is-phone) .atlas-group { gap: 6px; }
+/* 32px to look at, 44px to tap: each control's hit area reaches 6px past its edge. */
+:where(html.is-phone) .atlas-chip, :where(html.is-phone) .atlas-switch a, :where(html.is-phone) .atlas-zoom button, :where(html.is-phone) .rs-strip-tab { position: relative; }
+:where(html.is-phone) .atlas-chip::after, :where(html.is-phone) .atlas-switch a::after, :where(html.is-phone) .atlas-zoom button::after, :where(html.is-phone) .rs-strip-tab::after { content: ''; position: absolute; inset: -6px; }
+:where(html.is-phone) .atlas-chip { min-height: 32px; padding: 0 11px; font-size: 12.5px; display: inline-flex; align-items: center; text-decoration: none; }
+:where(html.is-phone) .atlas-icon { width: 32px; padding: 0; justify-content: center; }
+:where(html.is-phone) #atlasBack:not([hidden]) { display: inline-flex; font-size: 15px; }
+:where(html.is-phone) #atlasGrid, :where(html.is-phone) #atlasList { display: inline-flex; }
+:where(html.is-phone) #atlasFull { display: none; }
+:where(html.is-phone) .atlas-switch { font-size: 12.5px; line-height: 30px; overflow: visible; }
+:where(html.is-phone) .atlas-switch a { padding: 0 10px; display: inline-block; border-radius: 999px; }
+/* Search is a magnifier. */
+/* The label stays for screen readers at no size: line-height 0 keeps its line from pushing the icon up. */
+:where(html.is-phone) [data-go-chip] { width: 32px; padding: 0; font-size: 0; line-height: 0; display: inline-flex; align-items: center; justify-content: center; }
+:where(html.is-phone) [data-go-chip]::before {
+    content: ''; width: 15px; height: 15px; background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='6.5'%2F%3E%3Cpath d='M16 16l4.5 4.5'%2F%3E%3C%2Fsvg%3E") center / contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='6.5'%2F%3E%3Cpath d='M16 16l4.5 4.5'%2F%3E%3C%2Fsvg%3E") center / contain no-repeat;
+}
+:where(html.is-phone) .show-pop { max-width: calc(var(--view-w) - 16px); }
+:where(html.is-phone) .atlas-corner { right: 8px; bottom: 10px; transition: bottom 0.25s ease; }
+:where(html.is-phone) .atlas-zoom { font-size: 16px; line-height: 32px; overflow: visible; }
+:where(html.is-phone) .atlas-zoom button { min-width: 38px; padding: 0; }
+:where(html.is-phone) .atlas-status { left: 8px; bottom: 54px; }
+
+/* The player's height, when it shows: Info's pill, sheet and side panel sit above it. */
+:where(html.is-phone) body:has(> .local-player-host:not([hidden])) { --dock-h: 49px; }
+/* Info closed: a small pill bottom left instead of the strip… */
+:where(html.is-phone) .app-container .right-slot.is-collapsed {
+    position: fixed; inset: auto auto calc(10px + var(--dock-h, env(safe-area-inset-bottom))) calc(8px + env(safe-area-inset-left)); width: auto; height: auto; z-index: 95;
+    border: 1px solid var(--hairline-soft); border-radius: 999px; background: var(--bg-raised);
+}
+:where(html.is-phone) .right-slot.is-collapsed .rs-strip { flex-direction: row; padding: 0; }
+:where(html.is-phone) .right-slot.is-collapsed .rs-strip-tab { writing-mode: horizontal-tb; min-height: 32px; padding: 0 13px; font-size: 12.5px; border-radius: 999px; }
+:where(html.is-phone) .right-slot.is-collapsed .rs-grab { display: none; }
+/* …open: a sheet over the lower half, taller when pulled up; its tab row is its header. */
+:where(html.is-phone) .app-container .right-slot:not(.is-collapsed) {
+    position: fixed; inset: auto 0 var(--dock-h, 0px) 0; width: auto; height: calc(var(--view-h) * 0.46); z-index: 95;
+    border-left: 0; border-top: 1px solid var(--hairline-soft); border-radius: 16px 16px 0 0;
+    box-shadow: 0 -10px 30px var(--overlay-soft); padding-bottom: env(safe-area-inset-bottom);
+    transition: height 0.25s ease;
+}
+:where(html.is-phone) .app-container .right-slot.is-tall:not(.is-collapsed) { height: calc(var(--view-h) * 0.9); }
+:where(html.is-phone) .right-slot:not(.is-collapsed) .rs-handle { display: none; }
+:where(html.is-phone) .rs-grab { flex: none; height: 22px; cursor: grab; touch-action: none; display: grid; place-items: center; }
+:where(html.is-phone) .rs-grab::before { content: ''; width: 38px; height: 5px; border-radius: 3px; background: var(--hairline); }
+:where(html.is-phone) .app-container:has(.right-slot:not(.is-collapsed)) .atlas-corner { bottom: calc(var(--view-h) * 0.46 + 10px); }
+:where(html.is-phone) .app-container:has(.right-slot.is-tall:not(.is-collapsed)) .atlas-corner { visibility: hidden; }
+/* Phone landscape, and upright phones drawn sideways: Info is a side panel on the right, closed by
+   its › (a 44px target). Turned for real, the page keeps clear of the notch and the home bar. */
+@media (max-height: 500px) and (pointer: coarse) {
+    body { padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); }
+    .app-container .right-slot:not(.is-collapsed) { padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) 0; }
+    .app-container .right-slot:not(.is-collapsed) .rs-handle { display: grid; }
+    .rs-handle::after { content: ''; position: absolute; inset: -11px; }
+    .app-container .right-slot:not(.is-collapsed),
+    .app-container .right-slot.is-tall:not(.is-collapsed) { inset: 0 0 var(--dock-h, 0px) auto; width: min(380px, 55%); height: auto; border-radius: 16px 0 0 16px; border-top: 0; border-left: 1px solid var(--hairline-soft); }
+    .app-container:has(.right-slot:not(.is-collapsed)) .atlas-corner { bottom: 10px; right: calc(min(380px, 55%) + 8px); visibility: visible; }
+    .app-container:has(.right-slot:not(.is-collapsed)) .atlas-top { right: calc(min(380px, 55%) + 8px); }
+    .rs-grab { display: none; }
+}
+html.is-sideways .app-container .right-slot:not(.is-collapsed),
+html.is-sideways .app-container .right-slot.is-tall:not(.is-collapsed) { inset: 0 0 var(--dock-h, 0px) auto; width: min(380px, 55%); height: auto; border-radius: 16px 0 0 16px; border-top: 0; border-left: 1px solid var(--hairline-soft); }
+html.is-sideways .app-container:has(.right-slot:not(.is-collapsed)) .atlas-corner { bottom: 10px; right: calc(min(380px, 55%) + 8px); visibility: visible; }
+html.is-sideways .app-container:has(.right-slot:not(.is-collapsed)) .atlas-top { right: calc(min(380px, 55%) + 8px); }
+html.is-sideways .rs-grab { display: none; }
+html.is-sideways .app-container .right-slot:not(.is-collapsed) .rs-handle { display: grid; }
+html.is-sideways .rs-handle::after { content: ''; position: absolute; inset: -11px; }
+
+/* The selection bar, bottom left: the trail, the selection with Info, then ways to listen.
+   The bottom right stays the camera's. */
+.atlas-bar { position: absolute; left: 16px; bottom: 14px; z-index: 6; display: flex; align-items: center; gap: 2px; white-space: nowrap;
+    max-width: calc(100% - 240px); background: var(--bg-raised); border: 1px solid var(--hairline-soft); border-radius: 999px;
+    padding: 3px 4px 3px 10px; font-size: 12.5px; color: var(--text); box-shadow: 0 4px 18px var(--overlay-soft, rgba(0, 0, 0, .06));
+    animation: atlas-bar-up .15s ease-out; }
+.atlas-bar[hidden] { display: none; }
+@keyframes atlas-bar-up { from { transform: translateY(8px); opacity: 0; } }
+.atlas:has(.atlas-bar:not([hidden])) .atlas-status { bottom: 52px; }
+.ab-trail { display: inline-flex; align-items: center; margin-right: 6px; }
+.ab-step { position: relative; display: inline-grid; place-items: center; width: 14px; height: 18px; padding: 0; border: 0; background: none; cursor: pointer; transition: transform .15s; }
+.ab-step:hover, .ab-step:focus-visible { transform: scale(1.35); outline: none; }
+.ab-step:hover::after, .ab-step:focus-visible::after { content: attr(data-name); position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%) scale(.74);
+    font-size: 11px; background: var(--bg-raised); color: var(--text); border: 1px solid var(--hairline-soft); border-radius: 6px; padding: 2px 7px; white-space: nowrap; pointer-events: none; }
+/* A join runs from one step's colour to the next; its length is how loose the step was, dotted for a leap. */
+.ab-join { height: 2px; border-radius: 1px; background: linear-gradient(to right, var(--a), var(--b)); opacity: .85; transition: width .3s ease-out; }
+.ab-join.is-far { height: 0; background: none; border-top: 2px dotted var(--a); }
+.ab-now { display: inline-flex; align-items: center; gap: 6px; min-width: 0; border: 0; background: none; font: inherit; color: var(--text); padding: 0 2px 0 0; cursor: pointer; }
+.ab-glyph { flex: none; }
+.ab-name { overflow: hidden; text-overflow: ellipsis; max-width: 240px; text-decoration: underline; text-decoration-color: var(--c); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.ab-sep { width: 1px; height: 16px; background: var(--hairline-soft); margin: 0 3px; flex: none; }
+.ab-sites { display: inline-flex; }
+.ab-sites a::after { content: none; } /* the key shows in the title */
+.ab-btn { flex: none; border: 0; background: none; color: var(--text-dim); width: 28px; height: 26px; border-radius: 999px; display: inline-grid; place-items: center; cursor: pointer; font: inherit; text-decoration: none; }
+.ab-btn:hover, .ab-btn:focus-visible, .ab-btn[aria-pressed="true"] { background: var(--bg-hover); color: var(--text); outline: none; }
+.ab-btn.is-search { opacity: .55; }
+.ab-info, .ab-walk { width: 24px; }
+.ab-play { color: var(--text); }
+/* ✦ twinkles once when pressed. */
+#atlasRandom.is-twinkle svg { animation: atlas-twinkle .3s ease-out; }
+@keyframes atlas-twinkle { 50% { transform: scale(1.35) rotate(45deg); } }
+@media (prefers-reduced-motion: reduce) { .atlas-bar, #atlasRandom.is-twinkle svg { animation: none; } .ab-join { transition: none; } }
+:where(html.is-phone) .atlas-bar { max-width: calc(100% - 32px); bottom: 58px; }
+:where(html.is-phone) .ab-name { max-width: 34vw; }

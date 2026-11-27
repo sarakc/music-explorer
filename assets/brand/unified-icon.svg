@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Unified app icon: a plain U holding one coral dot, in the default skin's
+       paper, ink and accent. Full bleed; the mark stays inside the 80% safe
+       circle so Android can mask it. PNGs in this folder are rendered from it. -->
+  <rect width="512" height="512" fill="#ebe1d9"/>
+  <path d="M176 140 V292 a80 80 0 0 0 160 0 V140" fill="none" stroke="#2e2322" stroke-width="56" stroke-linecap="round"/>
+  <circle cx="256" cy="236" r="30" fill="#d9586a"/>
+</svg>

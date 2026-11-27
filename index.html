@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" data-viewer>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- The phone layout is decided once, as the page loads: phone.js's PHONE_QUERY (kept equal by web/test/phone.test.js). -->
+    <script>if (window.matchMedia && matchMedia('(max-width: 768px), (max-height: 500px) and (pointer: coarse)').matches) document.documentElement.classList.add('is-phone');</script>
+    <title>Unified</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#ebe1d9" />
+    <link rel="icon" href="assets/brand/unified-192.png" type="image/png" />
+    <link rel="apple-touch-icon" href="assets/brand/unified-touch-icon.png" />
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/components.css" />
+    <link rel="stylesheet" href="styles/discover.css" />
+    <link rel="stylesheet" href="styles/graph.css" />
+    <link rel="stylesheet" href="styles/discover-panel.css" />
+    <link rel="stylesheet" href="styles/tag-editor.css" />
+    <link rel="stylesheet" href="styles/track-review.css" />
+    <link rel="stylesheet" href="styles/workspace.css" />
+    <link rel="stylesheet" href="styles/info-look.css" />
+    <link rel="stylesheet" href="styles/playlists.css" />
+    <link rel="stylesheet" href="styles/tool-list.css" />
+    <link rel="stylesheet" href="styles/phone.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- No sidebar: the empty aside only holds the grid's first column, at zero width. -->
+      <aside class="sidebar" aria-hidden="true"></aside>
+      <main class="main-content" id="mainContent">
+        <div class="main-header">
+          <div class="top-bar">
+            <div><h1 class="view-title" id="viewTitle">Unified</h1><p class="view-subtitle" id="viewSubtitle"></p><p class="viewer-source"><span id="sourceLine"></span> · from Unified, a music library app · <a href="https://github.com/sarakc/music-explorer" target="_blank" rel="noopener">GitHub</a></p></div>
+            <div class="search-container">
+              <input type="text" class="search-input" placeholder="Search" aria-label="Search" id="searchInput" />
+              <button type="button" class="listen-btn" data-listen aria-label="Listen" title="Listen (⌘⇧L)" aria-controls="listenSheet" aria-expanded="false">♪</button>
+            </div>
+          </div>
+          <div class="section-tabs" id="sectionTabs" role="tablist" aria-label="Section"></div>
+          <nav class="section-subtabs" id="sectionSubtabs" aria-label="Cleanup" hidden></nav>
+          <p class="desktop-only-notice" id="desktopOnlyNotice" role="note" hidden></p>
+          <div class="filter-band-host" id="filterBand" hidden></div>
+          <div class="filter-line-host" id="filterLine" hidden></div>
+        </div>
+        <div class="main-scroll"><div id="contentArea"></div></div>
+        <div class="atlas-host" id="atlasHost" hidden></div>
+      </main>
+    </div>
+    <div id="localPlayerHost" hidden></div>
+    <div class="modal" id="modal"><div class="modal-content" id="modalContent"></div></div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC" crossorigin="anonymous"></script>
+    <script type="module">
+      import { startViewer } from './js/viewer-start.js';
+      import { createSnapshotSource } from './js/viewer-snapshot.js';
+      // `?src=yours`: the visitor's own map, when one is stored; else the snapshot, with the sheet open.
+      const yours = new URLSearchParams(location.search).get('src') === 'yours';
+      const visitor = yours ? await (await import('./js/visitor/visitor-boot.js')).openVisitorSource().catch((error) => { console.error(error); return null; }) : null;
+      await startViewer({ win: window, source: visitor || createSnapshotSource('snapshot/'), visitor: Boolean(visitor), openSheet: yours && !visitor });
+    </script>
+  </body>
+</html>
